@@ -5,6 +5,7 @@ const semver = require("semver");
 const logger = require("./utils/log");
 const express = require("express");
 const gradient = require('gradient-string'); // Ensure you have installed the gradient-string package
+const chalk = require('chalk'); // Ensure you have installed the chalk package
 
 const app = express();
 const port = process.env.PORT || 3078;
@@ -25,10 +26,15 @@ console.log(redToGreen("━".repeat(42)));
 
 // Function to get bot ping
 const getPing = async () => {
-  const start = Date.now();
-  await axios.get('https://www.google.com'); // Example request
-  const end = Date.now();
-  return end - start;
+  try {
+    const start = Date.now();
+    await axios.get('https://www.google.com'); // Example request
+    const end = Date.now();
+    return end - start;
+  } catch (error) {
+    logger(`Error fetching ping: ${error.message}`, "[ ERROR ]");
+    return -1; // Return a negative value to indicate an error
+  }
 };
 
 // Function to get memory usage
@@ -48,18 +54,27 @@ const getNumberOfCommands = () => {
   const memoryUsage = getMemoryUsage();
   const numberOfCommands = getNumberOfCommands();
 
-  console.log(redToGreen(`Bot Ping: ${ping} ms`));
-  console.log(redToGreen(`Memory Usage: ${memoryUsage} MB`));
-  console.log(redToGreen(`Number of Commands: ${numberOfCommands}`));
+  // Print features with blue color and bold font
+  const blueBold = chalk.blue.bold;
+  console.log(blueBold("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"));
+  console.log(blueBold(`┃ Bot Ping: ${ping >= 0 ? ping + ' ms' : 'Error fetching ping'}       ┃`));
+  console.log(blueBold(`┃ Memory Usage: ${memoryUsage} MB        ┃`));
+  console.log(blueBold(`┃ Number of Commands: ${numberOfCommands}             ┃`));
+  console.log(blueBold(`┃ Bot Version: LUNA-V3                         ┃`));
+  console.log(blueBold("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"));
+
   console.log(redToGreen("━".repeat(50)));
+
 })();
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send(`ZINO X MOHAMED`);
 });
 
 function startBot(message) {
-  (message) ? logger(message, "[ Starting ]") : "";
+  if (message) logger(message, "[ Starting ]");
 
   const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "main.js"], {
     cwd: __dirname,
@@ -68,20 +83,16 @@ function startBot(message) {
   });
 
   child.on("close", (codeExit) => {
-    if (codeExit != 0 || global.countRestart && global.countRestart < 5) {
+    if (codeExit !== 0 || (global.countRestart && global.countRestart < 5)) {
+      global.countRestart = (global.countRestart || 0) + 1;
       startBot("Starting up...");
-      global.countRestart += 1;
-      return;
-    } else return;
+    }
   });
 
-  child.on("error", function(error) {
+  child.on("error", (error) => {
     logger("An error occurred: " + JSON.stringify(error), "[ Starting ]");
   });
 }
-
-logger('••¤(`×[¤ MOHAMED X ZINO ¤]×´)¤••', "[ NAME ]");
-logger("Version: 1.1.0", "[ VERSION ]");
 
 startBot();
 
