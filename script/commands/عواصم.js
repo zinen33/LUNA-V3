@@ -146,8 +146,8 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
     const userName = global.data.userName.get(event.senderID) || await Users.getNameUser(event.senderID);
 
     if (userAnswer === correctAnswer) {
-        Currencies.increaseMoney(event.senderID, 20);
-        api.sendMessage(`تهانينا ${userName} عرفت العاصة وحصلت على 20 دولار`, event.threadID);
+        Currencies.increaseMoney(event.senderID, );
+        api.sendMessage(`✅ | ${userName} احسنت إجابتك صحيحة`, event.threadID);
         api.unsendMessage(handleReply.messageID); 
     } else {
         api.sendMessage(`خطأ حاول مره اخرا`, event.threadID);
