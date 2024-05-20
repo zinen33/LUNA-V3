@@ -12,9 +12,9 @@ const port = process.env.PORT || 3078;
 
 const logo = `
 ██╗░░░░░██╗░░░██╗███╗░░██╗░█████╗  
-██║░░░░░██║░░░██║████╗░██║██╔══██╗  ⪢
-██║░░░░░██║░░░██║██╔██╗██║███████║  ⪢
-██║░░░░░██║░░░██║██║╚████║██╔══██║  ⪢
+██║░░░░░██║░░░██║████╗░██║██╔══██╗ 
+██║░░░░░██║░░░██║██╔██╗██║███████║  
+██║░░░░░██║░░░██║██║╚████║██╔══██║  
 ███████╗╚██████╔╝██║░╚███║██║░░██║ 
 ╚══════╝ ╚═════╝ ╚═╝  ╚══╝╚═╝  ╚═╝ 
 `;
@@ -57,10 +57,10 @@ const getNumberOfCommands = () => {
   // Print features with blue color and bold font
   const blueBold = chalk.blue.bold;
   console.log(blueBold("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"));
-  console.log(blueBold(`┃⪢ Bot Ping: ${ping >= 0 ? ping + ' ms' : 'Error fetching ping'}       ┃`));
-  console.log(blueBold(`┃⪢ Memory Usage: ${memoryUsage} MB       ┃`));
-  console.log(blueBold(`┃⪢ Number of Commands: ${numberOfCommands}            ┃`));
-  console.log(blueBold(`┃⪢ Bot Version: LUNA-V3                        ┃`));
+  console.log(blueBold(`┃➢ Bot Ping: ${ping >= 0 ? ping + ' ms' : 'Error fetching ping'}       ┃`));
+  console.log(blueBold(`┃➢  Memory Usage: ${memoryUsage} MB       ┃`));
+  console.log(blueBold(`┃➢ Number of Commands: ${numberOfCommands}            ┃`));
+  console.log(blueBold(`┃➢ Bot Version: LUNA-V3                        ┃`));
   console.log(blueBold("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"));
 
   console.log(redToGreen("━".repeat(50)));
