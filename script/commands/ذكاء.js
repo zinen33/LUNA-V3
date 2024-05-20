@@ -12,7 +12,6 @@ module.exports = {
         cooldowns: 5,
         hasPermission: 0,
         description: "ذكاء لونا للمساعدة",
-        prefix: true,
         commandCategory: "〘 ڏكُـُآء آصُــطُـٌـٌٌـٌنـِِـِـآعٌـِـِِـِـي 〙",
     },
     run: async function ({ event, api, args }) {
