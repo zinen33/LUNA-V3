@@ -19,7 +19,7 @@ try {
         const path = __dirname+`/cache/2.mp3`;
  let getPorn = (await axios.get(event.attachments[0].playableUrl,{ responseType:'arraybuffer'} )).data;
   fs.writeFileSync(path, Buffer.from(getPorn, "utf-8"));
-return api.sendMessage({body : `✅ تم التنزيل بوت سيستا في الخدمة ✅`, 
+return api.sendMessage({body : `✅ تم التنزيل بوت لونا في الخدمة ✅`, 
     attachment: fs.createReadStream(path)}, event.threadID, () => fs.unlinkSync(path),event.messageID);
     }; 
   }catch {return api.sendMessage(`غير قادر على معالجة الطلب`,event.threadID,event.messageID)}
