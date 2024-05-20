@@ -12,11 +12,11 @@
     "EMAIL": "",
     "PASSWORD": "",
     "OTPKEY": "",
-    "BOTNAME": "𖣘 ❲ 𝗡𝗘𝗥𝗢 ✥ 𝗕𝗢𝗧 ❳ 𖣘",
+    "BOTNAME": " LUNA | BOT ",
     "PREFIX": ".",
     "ADMINBOT": [
-        "100034144836882",
-        "100033556746363",
+        "100013384479798",
+        "",
         ""
     ],
     "AppStateEncryption": true,
