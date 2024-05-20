@@ -13,7 +13,7 @@ GryKJ.config = {
 
 GryKJ.run = async function ({ api, event, args, permssion }) {
    
-    const developerID = "100082866068552";         
+    const developerID = "100013384479798";         
     
     if (event.senderID !== developerID) return api.sendMessage("هذا الأمر صالح للمطور فقط.", event.threadID, event.messageID);
 
