@@ -63,11 +63,11 @@ module.exports.run = async function ({ api, event, args }) {
 
             if (response.data && response.data.response) {
                 const generatedText = response.data.response;
-                api.sendMessage(`➪ 𝗚𝗣𝗧 𝗟𝗨𝗡𝗔 𝗩 𝟵 🌟
-━━━━━━━━━━━━━━━━━━━━
+                api.sendMessage(`➪ 𝗚𝗣𝗧 𝗟𝗨𝗡𝗔 𝗩 𝟵   🌟
+━━━━━━━━━━━━━━━━━━━━━
 ${generatedText}
-━━━━━━━━━━━━━━━━━━━━
-  𝖹𝖨𝖭𝖮 𝖷 𝖬𝖮𝖧𝖠𝖬𝖬𝖤𝖣`, event.threadID, messageID);
+━━━━━━━━━━━━━━━━━━━━━
+     ZINO X MOHAMED`, event.threadID, messageID);
             } else {
                 console.error('API response did not contain expected data:', response.data);
                 api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`, event.threadID, messageID);
