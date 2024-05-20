@@ -83,7 +83,9 @@ module.exports.run = async function ({ args, api, event, Currencies, client }) {
 
         const rank = getRank(infoUser.exp);
 
-        const msg = `اسمك👤: 『${name}』\nرسائلك✉️️: 『${infoUser.exp}』\nتصنيفك:`;
+        const msg = `اسمك👤: 『${name}』
+رسائلك✉️️: 『${infoUser.exp}』
+ID حسابك: 『${userID}』`;
 
         api.sendMessage({
           body: msg,
