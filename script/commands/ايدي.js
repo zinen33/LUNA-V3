@@ -40,7 +40,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "ǺᎩᎧᏬᏰ",
   description: "user facebookID",
-  commandCategory: "🎮الالعاب🎮",
+  commandCategory: "الالعاب",
   cooldowns: 0,
 };
 
@@ -83,7 +83,7 @@ module.exports.run = async function ({ args, api, event, Currencies, client }) {
 
         const rank = getRank(infoUser.exp);
 
-        const msg = `اسمك👤: 『${name}』\nرسائلك✉️️: 『${infoUser.exp}』\nتصنيفك: 『${rank}』\nالبنك💰: 『${moneyFromFile}💲』\nالكاش💰: 『${moneyFromUserData}💵』`;
+        const msg = `اسمك👤: 『${name}』\nرسائلك✉️️: 『${infoUser.exp}』\nتصنيفك:`;
 
         api.sendMessage({
           body: msg,
