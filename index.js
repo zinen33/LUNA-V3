@@ -70,7 +70,7 @@ const getNumberOfCommands = () => {
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send(`ZINO X MOHAMED`);
+  res.send(`😈 ZINO X MOHAMED 😈`);
 });
 
 function startBot(message) {
