@@ -3,7 +3,7 @@ module.exports = {
   Preset: {
   name: "تقييد",
   version: "1.0.0",
-  Role: 1,
+  Permission: 1,
   credits: "..",
   description: "المطور",
   Class: "ثريدز",
