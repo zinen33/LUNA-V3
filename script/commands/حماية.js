@@ -2,7 +2,7 @@ const fs = require("fs"),
   path = __dirname + "/cache/namebox.json";
 
 module.exports.config = {
-name: "اسم-المجموعه",
+name: "حماية",
 version: "1.0.8",
 hasPermssion: 0,
 credits: "نوت دفاين",
