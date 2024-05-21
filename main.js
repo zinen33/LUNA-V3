@@ -454,7 +454,7 @@ cron.schedule('0 0 21 * * *', () => {
         botData.models = models
         onBot(botData);
     } catch (error) { logger(global.getText('mirai', 'successConnectDatabase', JSON.stringify(error)), '[ DATABASE ]'); }
-console.log(chalk.bold.hex("#eff1f0").bold("═══════════ SUCCESFULLY ════════════"));
+console.log(chalk.bold.hex("#eff1f0").bold("════════════ SUCCESFULLY ════════════"));
 
 })();
 process.on('unhandledRejection', (err, p) => {});
