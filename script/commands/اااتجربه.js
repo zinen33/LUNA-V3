@@ -77,10 +77,10 @@ module.exports.run = async ({ api, event, args, Users, Threads, Currencies }) =>
     var data = await Currencies.getData(event.senderID);
     var money = data.money;
 
-    if (money < 500) {
-      return api.sendMessage("ادفع 500 دولار", event.threadID, event.messageID);
+    if (money < ) {
+      return api.sendMessage("✅", event.threadID, event.messageID);
     } else {
-      Currencies.setData(event.senderID, { money: money - 500 });
+      Currencies.setData(event.senderID, { money: money -  });
       var randomLink = link[Math.floor(Math.random() * link.length)];
 
       const callback = () => {
