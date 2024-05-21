@@ -3,12 +3,12 @@ module.exports = {
   Preset: {
   name: "تقييد",
   version: "1.0.0",
-  Permission: 1,
+  hasPermission: 2,
   credits: "..",
   description: "المطور",
   Class: "ثريدز",
   usages: "",
-  Rest: 5
+  cooldowns: 5
 },
   Start: async function({ args, api, Message, event, threadsData, usersData }) {
 
