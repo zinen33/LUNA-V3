@@ -4,7 +4,6 @@ module.exports.config = {
   haPermission: 2,
   credits: "DRIDI-RAYEN",
   description: "تقوم ايفا بطرد كل من يتكلم في وضع السكوت",
-    usePrefix: false,
   commandCategory: "〘 ادمن المجموعات 〙",
   usages: "سكوت تشغيل/ايقاف",
   cooldowns: 5,
