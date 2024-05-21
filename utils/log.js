@@ -1,34 +1,30 @@
 const chalk = require('chalk');
 const gradient = require('gradient-string');
+module.exports = (data, option) => {
+	switch (option) {
+		case "warn":
+			console.log(chalk.bold.hex("#FF00FF").bold('[ ERROR ] » ') + data);
+			break;
+		case "error":
+			console.log(chalk.bold.hex("#FF00FF").bold('[ ERROR ] »') + data);
+     break;
+		default:			        
+                        console.log(chalk.bold.hex("#00BFFF").bold(`${option} » `) + data);
+			break;
+	}
+}
 
-const log = (errorMessage, solutionMessage) => {
-    console.error(chalk.bold.hex("#FF00FF")(`[ ERROR ] ${chalk.red('⚠')} » `) + errorMessage);
-    if (solutionMessage) {
-        console.log(chalk.bold.hex("#FFA500")(`[ SOLUTION ] » `) + solutionMessage);
-    }
-};
+module.exports.loader = (data, option) => {
+	switch (option) {
 
-const logWithGradient = (errorMessage, solutionMessage) => {
-    console.error(gradient.rainbow(`[ 😈 MOHAMED X ZINO 😈 ERROR ${chalk.red('⚠')} ] » `) + errorMessage);
-    if (solutionMessage) {
-        console.log(gradient.rainbow(`[ 🌟 SOLUTION 🌟 ] » `) + solutionMessage);
-    }
-};
-
-// Export the log functions
-module.exports = log;
-module.exports.loader = logWithGradient;
-
-// Example usage with error handling
-const exampleFunction = () => {
-    try {
-        // Simulate an error
-        throw new Error("This is a simulated error message");
-    } catch (error) {
-        log(error.message, "This is the solution for the error.");
-        logWithGradient(error.message, "This is the solution for the error.");
-    }
-};
-
-// Call the example function to demonstrate error logging
-exampleFunction();
+		case "warn":
+			console.log(gradient.rainbow('[ 😈 𝐌𝐎𝐇𝐀𝐌𝐄𝐃 𝐗 𝐙𝐈𝐍𝐎 😈 ] » ') + data);
+			break;
+		case "error":
+			console.log(gradient.rainbow('[ 👿 ERROR 👿 ] » ') + data);
+			break;
+		default:
+			console.log(gradient.rainbow('[ 😈 𝐌𝐎𝐇𝐀𝐌𝐄𝐃 𝐗 𝐙𝐈𝐍𝐎 😈 ] » ') + data);
+			break;
+	}
+}
