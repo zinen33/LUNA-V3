@@ -47,7 +47,7 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
             case "log:thread-admins": {
                 if (logMessageData.ADMIN_EVENT == "add_admin") {
                     dataThread.adminIDs.push({ id: logMessageData.TARGET_ID })
-                    api.sendMessage(`[⚜️] تحديث شيفرة المجموعة [⚜️]\n» المستخدم ${logMessageData.TARGET_ID} أصبح مسؤول`, threadID);
+                    api.sendMessage(`[⚜️] تحديث شيفرة المجموعة [⚜️]\n» المستخدم ${userName} أصبح مسؤول`, threadID);
                 }
                 else if (logMessageData.ADMIN_EVENT == "remove_admin") {
                     dataThread.adminIDs = dataThread.adminIDs.filter(item => item.id != logMessageData.TARGET_ID);
