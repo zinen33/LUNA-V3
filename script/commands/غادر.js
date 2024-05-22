@@ -34,7 +34,7 @@ module.exports.run = async function({ api, event, args }) {
         
         const userInfo = await api.getUserInfo(event.senderID);
         const senderName = userInfo[event.senderID].name;
-        const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج🥷`, event.threadID);
+        const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
 
         api.listen(function callback(error, event) {
             if (error) return console.error(error);
@@ -45,7 +45,7 @@ module.exports.run = async function({ api, event, args }) {
                     return;
                 }
                 
-                api.sendMessage(` تنبيه امر لمطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒🥷`, event.threadID, () => {
+                api.sendMessage(`تنبيه امر لمطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
                     api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
                 });
             }
@@ -53,13 +53,13 @@ module.exports.run = async function({ api, event, args }) {
     } else {
         const userInfo = await api.getUserInfo(event.senderID);
         const senderName = userInfo[event.senderID].name;
-        const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} 🥷\n🥷  تفاعل معا رسالتي ب 👍 لتأكيد الخروج🥷`, event.threadID);
+        const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
 
         api.listen(function callback(error, event) {
             if (error) return console.error(error);
             
             if (event.type === "message_reaction" && event.reaction === "👍" && event.messageID === confirmationMessage.messageID) {
-                api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒🥷`, event.threadID, () => {
+                api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
                     api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
                 });
             }
