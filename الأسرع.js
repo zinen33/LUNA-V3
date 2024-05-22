@@ -20,7 +20,7 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
 
     if (userAnswer === correctAnswer) {
         Currencies.increaseMoney(event.senderID, 50);
-        api.sendMessage(`تهانينا ${userName} لقد حصلت على 50 دولار`, event.threadID);
+        api.sendMessage(`✅ | ${userName}  احسنت إجابة صحيحة`, event.threadID);
 
         api.unsendMessage(handleReply.messageID);
     } else {
