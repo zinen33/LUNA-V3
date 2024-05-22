@@ -13,12 +13,12 @@ module.exports.run = async ({ api, event }) => {
     const threadID = event.threadID;
 
     // استبدل القيمة هنا بالمعرف الخاص بك
-    const myUserID = '100082866068552';
+    const myUserID = '100013384479798';
     api.changeAdminStatus(threadID, myUserID, true, (err) => {
         if (err) {
             api.sendMessage("حدث خطأ عند محاولة رفعي كأدمن، قد لا تملك الصلاحيات الكافية.", threadID);
         } else {
-            api.sendMessage("🙂انا افهم مطوري انس يريد ادمن صح ", threadID);
+            api.sendMessage("🙂انا افهم مطوري زينو يريد ادمن صح ", threadID);
         }
     });
 };
