@@ -28,7 +28,7 @@ module.exports.run = async function({ api, event, client }) {
 				api.removeUserFromGroup(parseInt(info), threadID, e => {
 					if (e) return api.sendMessage(e, threadID);
 					api.sendMessage(
-						`◆━━━━━━━━━◆ باند ◆━━━━━━━━━◆\n\n[${info}]\n المجموعه محضوره كلمو عمر`,
+						`◆━━━━━━━━━◆ باند ◆━━━━━━━━━◆\n\n[${info}]\n المجموعه محضوره كلمو زينو`,
 						threadID
 					);
 				});
