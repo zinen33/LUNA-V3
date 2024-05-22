@@ -15,6 +15,6 @@ module.exports.run = async function({ api, event, Users, Threads }) {
     if (logMessageData.participant_id == botID && author != botID && !ADMINBOT.includes(author) && logMessageData.nickname != nickname) {
         api.changeNickname(nickname, threadID, botID)
         var info = await Users.getData(author);
-       return api.sendMessage({ body: `${info.name} -فقط احمد يستطيع تغيير كنية البوت هيهيهي`}, threadID);
+       return api.sendMessage({ body: `${info.name} -فقط زينو يستطيع تغيير كنية البوت هيهيهي`}, threadID);
     }  
 }
