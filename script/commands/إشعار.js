@@ -6,7 +6,7 @@ module.exports.config = {
     version: "1.0.0",
     hasPermssion: 2,
     credits: "TruongMini, mod by Clarence-DK",
-    description: "",
+    description: "هههه",
     commandCategory: "المالك",
     usages: "[رسالة]",
     cooldowns: 5,
