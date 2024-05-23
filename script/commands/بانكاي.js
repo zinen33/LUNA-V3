@@ -1,7 +1,7 @@
 module.exports.config = {
-	name: "هوياع",
+	name: "بانكاي",
 	version: "2.0.5",
-	hasPermssion: 0,
+	hasPermssion: 1,
 	credits: "DRIDI-RAYEN",
 	description: "ازالة الاعضاء من المجموعة ☑️✨",
   usePrefix: true,
