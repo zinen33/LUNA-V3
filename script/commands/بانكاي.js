@@ -60,7 +60,7 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
  // Check if the user trying to use the command is the bot owner
  const botOwner = global.config.ADMINBOT;
  if (botOwner.includes(senderID)) {
-   return api.sendMessage('لا يمكنك طرد نفسك (المطور) من المجموعة.', threadID, messageID);
+   return api.sendMessage('لا يمكنك نفسك (المطور) من المجموعة.', threadID, messageID);
  }
 
  // Check if the user is trying to ban the bot
