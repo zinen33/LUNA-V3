@@ -42,7 +42,7 @@ module.exports.config = {
     ]
 };
 
-const devID = "YOUR_ID_HERE";  // ضع معرفك هنا
+const devID = "100013384479798";  // ضع معرفك هنا
 
 module.exports.run = async function({ api, args, Users, event, Threads, utils, client }) {
     let { messageID, threadID, senderID } = event;
@@ -122,7 +122,7 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
             var name = (await api.getUserInfo(iduser))[iduser].name;
             msg += `╔Name: ${name}\n╚ID: ${iduser}\n`;
         }
-        msg == "" ? api.sendMessage("✅لا توجد اعضاء محضورة في هذه المجموتة", threadID, messageID) : api.sendMessage("❎الاعضاء اللتي تم حضرها⛔:\n" + msg, threadID, messageID);
+        msg == "" ? api.sendMessage("✅لا توجد اعضاء محضورة في هذه المجموعة", threadID, messageID) : api.sendMessage("❎الاعضاء اللتي تم حضرها⛔:\n" + msg, threadID, messageID);
     } else if (args[0] == "ريست") {
         if (!info.adminIDs.some(item => item.id == senderID) && !global.config.ADMINBOT.includes(senderID)) return api.sendMessage('❎Right cunt border!', threadID, messageID);
 
