@@ -41,7 +41,7 @@ module.exports.run = async function ({ api, event, args }) {
 
       { image: "https://i.pinimg.com/originals/2d/a2/6e/2da26e58efd5f32fe2e33b9654907ab5.gif", answer: "الصومال" },
 
-      { image: "https://i.pinimg.com/originals/eb/cd/cc/ebcdccc8ea5ecec70fcb727a8581bd0e.jpg", answer: "اخرائيل" },
+      { image: "https://i.postimg.cc/CLK3nHk8/images-1.jpg", answer: "اخرائيل" },
 
       { image: "https://i.pinimg.com/originals/0e/10/d2/0e10d2240dd28af2eff27ce0fa8b5b8d.jpg", answer: "اليابان" },
 
