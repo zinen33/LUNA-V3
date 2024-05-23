@@ -57,16 +57,16 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
     return api.sendMessage('عذرا لا يمكنني ازالة العضو😥\nاحتاج أن اكون مسوؤلة⏳', threadID, messageID);
   }
 
-  // Check if the user trying to use the command is the bot owner
-  const botOwner = global.config.ADMINBOT;
-  if (botOwner.includes(senderID)) {
-    return api.sendMessage('لا يمكنك طرد نفسك (المطور) من المجموعة.', threadID, messageID);
-  }
-
   // Check if the user is trying to ban the bot
   const botID = api.getCurrentUserID();
   if (Object.keys(event.mentions).includes(botID)) {
-    return api.sendMessage('لا يمكنك طردي من المجموعة.', threadID, messageID);
+    // Check if the user trying to use the command is the bot owner
+    const botOwner = global.config.ADMINBOT;
+    if (botOwner.includes(senderID)) {
+      return api.sendMessage('لا يمكنك طرد نفسك (المطور) من المجموعة.', threadID, messageID);
+    } else {
+      return api.sendMessage('لا يمكنك طردي من المجموعة.', threadID, messageID);
+    }
   }
 
   if (args[0] == "حظر") {
@@ -75,7 +75,8 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
       return api.sendMessage('يرجى ذكر المستخدم الذي تريد حظره.', threadID, messageID);
     }
 
-    // Check if the mentioned user is the bot owner or the bot itself
+    // Check if the mentioned user is the bot owner
+    const botOwner = global.config.ADMINBOT;
     if (botOwner.includes(userID) || userID === botID) {
       return api.sendMessage('لا يمكنك حظر المطور أو البوت نفسه من المجموعة.', threadID, messageID);
     }
