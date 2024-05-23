@@ -1,7 +1,7 @@
 module.exports.config = {
-  name: "الاوامر",
+  name: "مساعدة",
   version: "1.0.2",
-  hasPermssion: 0,
+  hasPermssion: 2,
   credits: "🥷MOHAMED🇦🇱X🇦🇱ZINO🥷",
   description: "الاوامر",
   commandCategory: "Help Zone",
