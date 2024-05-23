@@ -74,9 +74,8 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
             var msg = "";
             var mywarn = bans.warns[threadID][senderID];
             if (!mywarn) return api.sendMessage('☑️لم يتم تحذير قط', threadID, messageID);
-            var num = 1;
             for (let reasonwarn of mywarn) {
-                msg += `reasonwarn\n`;
+                msg += `${reasonwarn}\n`;
             }
             api.sendMessage(`❎لقد تم تحذيرك : ${msg}`, threadID, messageID);
         } else if (Object.keys(event.mentions).length != 0) {
@@ -85,27 +84,26 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
             for (let id of mentions) {
                 var name = (await api.getUserInfo(id))[id].name;
                 var msg = "";
-                var so = 1;
                 var reasonarr = bans.warns[threadID][id];
                 if (typeof reasonarr != "object") {
-                    msg += " Never been warned\n"
+                    msg += "Never been warned\n";
                 } else {
                     for (let reason of reasonarr) {
-                        msg += "" + reason + "\n";
+                        msg += `${reason}\n`;
                     }
                 }
-                message += "⭐️" + name + " :" + msg + "";
+                message += `⭐️${name} : ${msg}`;
             }
             api.sendMessage(message, threadID, messageID);
         } else if (args[1] == "الكل") {
             var dtwbox = bans.warns[threadID];
             var allwarn = "";
             for (let idtvw in dtwbox) {
-                var name = (await api.getUserInfo(idtvw))[idtvw].name, msg = "", solan = 1;
+                var name = (await api.getUserInfo(idtvw))[idtvw].name, msg = "";
                 for (let reasonwtv of dtwbox[idtvw]) {
-                    msg += `${reasonwtv}`
+                    msg += `${reasonwtv}\n`;
                 }
-                allwarn += `${name} : ${msg}\n`;
+                allwarn += `${name} : ${msg}`;
             }
             allwarn == "" ? api.sendMessage("✅لم يتم تحذير اي شخص في مجموعتك بعد", threadID, messageID) : api.sendMessage("قائمة📜 الاعضاء👤 اللتي تم تحذيرها⚠️:\n" + allwarn, threadID, messageID);
         }
@@ -117,12 +115,12 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
         mybox.splice(mybox.indexOf(id), 1);
         delete bans.warns[threadID][id];
         fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
-    } else if (args[0] == "ليست_بان") {
+    } else if (args[0] == "قائمة_الحضر") {
         var mybox = bans.banned[threadID];
         var msg = "";
         for (let iduser of mybox) {
             var name = (await api.getUserInfo(iduser))[iduser].name;
-            msg += "╔Name: " + name + "\n╚ID: " + iduser + "\n";
+            msg += `╔Name: ${name}\n╚ID: ${iduser}\n`;
         }
         msg == "" ? api.sendMessage("✅لا توجد اعضاء محضورة في هذه المجموتة", threadID, messageID) : api.sendMessage("❎الاعضاء اللتي تم حضرها⛔:\n" + msg, threadID, messageID);
     } else if (args[0] == "ريست") {
@@ -143,12 +141,7 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
             reason = (args.join(" ")).trim();
         } else if (Object.keys(event.mentions).length != 0) {
             iduser = Object.keys(event.mentions);
-            var stringname = "";
-            var nametaglength = (Object.values(event.mentions)).length;
             var namearr = Object.values(event.mentions);
-            for (let i = 0; i < nametaglength; i++) {
-                stringname += (Object.values(event.mentions))[i];
-            }
             var message = args.join(" ");
             for (let valuemention of namearr) {
                 message = message.replace(valuemention, "");
@@ -174,8 +167,6 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
 
             if (!reason) reason = "No reason was given";
             var dtwmybox = bans.warns[threadID];
-            if (!dtwmybox.hasOwnProperty(id)) {
-                dtw             var dtwmybox = bans.warns[threadID];
             if (!dtwmybox.hasOwnProperty(id)) {
                 dtwmybox[id] = [];
             }
