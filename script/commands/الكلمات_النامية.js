@@ -1,8 +1,6 @@
-const path = require("path");
-const fs = require("fs");
-
 let warnings = {};
 let badWordsActive = {};
+let removedFromAdmin = {};
 
 module.exports.config = {
   name: "الكلمات_النامية",
@@ -37,8 +35,13 @@ module.exports.handleEvent = async function({ api, event }) {
 
   const isAdmin = (await api.getThreadInfo(threadID)).adminIDs.some(adminInfo => adminInfo.id === api.getCurrentUserID());
 
-  if (!isAdmin) {
+  if (!isAdmin && !removedFromAdmin[threadID]) {
     api.sendMessage("Bot Needs Admin Privilege", threadID);
+    removedFromAdmin[threadID] = true; // تعيين المتغير بقيمة true بمجرد الإعلان عن إزالة البوت من الإدارة
+    return;
+  }
+
+  if (!isAdmin && removedFromAdmin[threadID]) {
     return;
   }
 
@@ -82,6 +85,7 @@ module.exports.run = async function({ api, event, args }) {
       break;
     case 'إيقاف':
       badWordsActive[threadID] = false;
+      removedFromAdmin[threadID] = true;
       api.sendMessage(`❎ | تم إيقاف الحظر التلقائي للكلمات المحظورة.`, threadID);
       break;
     default:
