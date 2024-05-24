@@ -29,10 +29,10 @@ module.exports.run = async function({ api, event, args }) {
 
     const responses = [
         "عذرا انت لست مطور يا ${reactingUserName} حتة اخرج",
-        "لا يمكنك استخدام هذا الأمر يا ${reactingUserName} لأنك لست مطور",
+        "لماذا تتفاعل مع رسالتي وانت لست مطور  ${reactingUserName} يا إبن متناكة",
         "أمر هذا ليس مسموحًا لك يا ${reactingUserName}، أنت لست مطور",
         "يبدو أنك تحاول استخدام أمر غير مسموح لك به يا ${reactingUserName}",
-        "لا تملك الصلاحيات اللازمة يا ${reactingUserName} لاستخدام هذا الأمر"
+        "انت مزعج حقا لاتتفاعل مع رسالتي لن اخرج حتى يوافق مطور ${reactingUserName} يا"
     ];
 
     function getRandomResponse(reactingUserName) {
