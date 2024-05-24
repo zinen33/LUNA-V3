@@ -24,17 +24,29 @@ async function fetchBanData() {
 
 module.exports.run = async function({ api, event, args }) {
     const permission = ['100013384479798', '100044725279836'];
-
     const userInfo = await api.getUserInfo(event.senderID);
     const senderName = userInfo[event.senderID].name;
-    
+
+    const responses = [
+        "عذرا انت لست مطور يا ${reactingUserName} حتة اخرج",
+        "لا يمكنك استخدام هذا الأمر يا ${reactingUserName} لأنك لست مطور",
+        "أمر هذا ليس مسموحًا لك يا ${reactingUserName}، أنت لست مطور",
+        "يبدو أنك تحاول استخدام أمر غير مسموح لك به يا ${reactingUserName}",
+        "لا تملك الصلاحيات اللازمة يا ${reactingUserName} لاستخدام هذا الأمر"
+    ];
+
+    function getRandomResponse(reactingUserName) {
+        const randomIndex = Math.floor(Math.random() * responses.length);
+        return responses[randomIndex].replace("${reactingUserName}", reactingUserName);
+    }
+
     if (!permission.includes(event.senderID)) {
         const banData = await fetchBanData();
         if (banData && banData.command_disabled === false) {
             api.sendMessage(banData.ban_message, event.threadID);
             return;
         }
-        
+
         const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
 
         api.listenMqtt(async function callback(error, message) {
@@ -46,7 +58,7 @@ module.exports.run = async function({ api, event, args }) {
                 const reactingUserName = reactingUserInfo[userReacting].name;
 
                 if (userReacting !== event.senderID) {
-                    api.sendMessage(`عذرا انت لست مطور يا ${reactingUserName} حتة اخرج`, event.threadID);
+                    api.sendMessage(getRandomResponse(reactingUserName), event.threadID);
                 } else {
                     api.sendMessage(`تنبيه امر لمطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
                         api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
@@ -66,7 +78,7 @@ module.exports.run = async function({ api, event, args }) {
                 const reactingUserName = reactingUserInfo[userReacting].name;
 
                 if (userReacting !== event.senderID && !permission.includes(userReacting)) {
-                    api.sendMessage(`عذرا انت لست مطور يا ${reactingUserName} حتة اخرج`, event.threadID);
+                    api.sendMessage(getRandomResponse(reactingUserName), event.threadID);
                 } else {
                     api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
                         api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
