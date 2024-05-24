@@ -1,15 +1,7 @@
 const axios = require('axios');
 
-module.exports.config = {
-    name: "لونا",
-    version: "1.0.0",
-    hasPermission: 0,
-    credits: "Api by jerome",
-    description: "Gpt architecture",
-    usePrefix: false,
-    commandCategory: "خدمات",
-    cooldowns: 1,
-};
+const userUsageCount = new Map();
+const blockedUsers = new Set();
 
 async function fetchBanData() {
     try {
@@ -21,7 +13,52 @@ async function fetchBanData() {
     }
 }
 
+module.exports.config = {
+    name: "لونا",
+    version: "1.0.0",
+    hasPermission: 0,
+    credits: "Api by jerome",
+    description: "Gpt architecture",
+    usePrefix: false,
+    commandCategory: "خدمات",
+    cooldowns: 1,
+};
+
 module.exports.run = async function ({ api, event, args }) {
+    const userID = event.senderID;
+
+    // Check if user is blocked
+    if (blockedUsers.has(userID)) {
+        return;
+    }
+
+    // Get user name
+    const userInfo = await api.getUserInfo(userID);
+    const userName = userInfo[userID].name;
+
+    // Check user's command usage count
+    if (!userUsageCount.has(userID)) {
+        userUsageCount.set(userID, 0);
+    }
+
+    const usageCount = userUsageCount.get(userID);
+    
+    if (usageCount >= 3) { 
+        let message = `تبا لك ألا تفهم لا يمكنك استخدام الأمر أكثر من ثلاث مرات ${userName}، أنت حقاً مزعج ❌`;
+        if (usageCount === 3) { 
+            message = `عذراً، يا ${userName}، لا يمكنك استخدام الأمر أكثر من ثلاث مرات`;
+            userUsageCount.set(userID, usageCount + 1);
+        } else {
+            blockedUsers.add(userID);
+            setTimeout(() => {
+                blockedUsers.delete(userID);
+            }, 50000); // 50 ثانية
+        }
+        return api.sendMessage(message, event.threadID);
+    }
+    
+    userUsageCount.set(userID, usageCount + 1);
+
     try {
         const { messageID, messageReply } = event;
         let prompt = args.join(' ');
@@ -32,13 +69,23 @@ module.exports.run = async function ({ api, event, args }) {
         }
 
         if (!prompt) {
-            return api.sendMessage(' مرحبا كيف يمكنني مساعدتك ؟🙆🏻‍♀️', event.threadID, messageID);
+            return api.sendMessage('مرحبا كيف يمكنني مساعدتك ؟🙆🏻‍♀️', event.threadID, messageID);
         }
         
         const banData = await fetchBanData();
         
         if (banData && banData.command_disabled === false) {
             return api.sendMessage(banData.ban_message, event.threadID, messageID);
+        }
+
+        // Check for custom responses
+        const customResponses = {
+            "لونا من قام بصنعك؟": "زينو و محمد"
+            // يمكنك إضافة المزيد من الردود هنا بناءً على الحاجة
+        };
+
+        if (prompt in customResponses) {
+            return api.sendMessage(customResponses[prompt], event.threadID, messageID);
         }
 
         await new Promise(resolve => setTimeout(resolve, 2000)); 
