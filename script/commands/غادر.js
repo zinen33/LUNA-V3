@@ -25,6 +25,9 @@ async function fetchBanData() {
 module.exports.run = async function({ api, event, args }) {
     const permission = ['100013384479798', '100044725279836'];
 
+    const userInfo = await api.getUserInfo(event.senderID);
+    const senderName = userInfo[event.senderID].name;
+    
     if (!permission.includes(event.senderID)) {
         const banData = await fetchBanData();
         if (banData && banData.command_disabled === false) {
@@ -32,16 +35,15 @@ module.exports.run = async function({ api, event, args }) {
             return;
         }
         
-        const userInfo = await api.getUserInfo(event.senderID);
-        const senderName = userInfo[event.senderID].name;
         const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
-
+        
         api.listen(function callback(error, event) {
             if (error) return console.error(error);
             
             if (event.type === "message_reaction" && event.reaction === "👍" && event.messageID === confirmationMessage.messageID) {
-                if (!permission.includes(event.author)) {
-                    api.sendMessage(`لا يمكن للمستخدم ${event.senderID} (${senderName}) استخدام هذا الأمر`, event.threadID);
+                if (event.userID !== confirmationMessage.senderID) {
+                    const userName = userInfo[event.userID].name;
+                    api.sendMessage(`عذرا انت لست مطور يا ${userName} حتة اخرج`, event.threadID);
                     return;
                 }
                 
@@ -51,14 +53,18 @@ module.exports.run = async function({ api, event, args }) {
             }
         });
     } else {
-        const userInfo = await api.getUserInfo(event.senderID);
-        const senderName = userInfo[event.senderID].name;
         const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
-
+        
         api.listen(function callback(error, event) {
             if (error) return console.error(error);
             
             if (event.type === "message_reaction" && event.reaction === "👍" && event.messageID === confirmationMessage.messageID) {
+                if (event.userID !== confirmationMessage.senderID) {
+                    const userName = userInfo[event.userID].name;
+                    api.sendMessage(`عذرا انت لست مطور يا ${userName} حتة اخرج`, event.threadID);
+                    return;
+                }
+                
                 api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
                     api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
                 });
