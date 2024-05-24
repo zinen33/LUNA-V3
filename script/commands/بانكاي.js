@@ -42,7 +42,7 @@ module.exports.config = {
     ]
 };
 
-const devID = "100013384479798";  // ضع معرفك هنا
+const devID = "";  // ضع معرفك هنا
 
 module.exports.run = async function({ api, args, Users, event, Threads, utils, client }) {
     let { messageID, threadID, senderID } = event;
@@ -69,124 +69,38 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
         fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
     }
 
-    if (args[0] == "عرض") {
-        if (!args[1]) {
-            var msg = "";
-            var mywarn = bans.warns[threadID][senderID];
-            if (!mywarn) return api.sendMessage('☑️لم يتم تحذير قط', threadID, messageID);
-            for (let reasonwarn of mywarn) {
-                msg += `${reasonwarn}\n`;
-            }
-            api.sendMessage(`❎لقد تم تحذيرك : ${msg}`, threadID, messageID);
-        } else if (Object.keys(event.mentions).length != 0) {
-            var message = "";
-            var mentions = Object.keys(event.mentions);
-            for (let id of mentions) {
-                var name = (await api.getUserInfo(id))[id].name;
-                var msg = "";
-                var reasonarr = bans.warns[threadID][id];
-                if (typeof reasonarr != "object") {
-                    msg += "Never been warned\n";
-                } else {
-                    for (let reason of reasonarr) {
-                        msg += `${reason}\n`;
-                    }
-                }
-                message += `⭐️${name} : ${msg}`;
-            }
-            api.sendMessage(message, threadID, messageID);
-        } else if (args[1] == "الكل") {
-            var dtwbox = bans.warns[threadID];
-            var allwarn = "";
-            for (let idtvw in dtwbox) {
-                var name = (await api.getUserInfo(idtvw))[idtvw].name, msg = "";
-                for (let reasonwtv of dtwbox[idtvw]) {
-                    msg += `${reasonwtv}\n`;
-                }
-                allwarn += `${name} : ${msg}`;
-            }
-            allwarn == "" ? api.sendMessage("✅لم يتم تحذير اي شخص في مجموعتك بعد", threadID, messageID) : api.sendMessage("قائمة📜 الاعضاء👤 اللتي تم تحذيرها⚠️:\n" + allwarn, threadID, messageID);
+    // كود التفاعل مع الإيموجيات المغضبة
+    if (event.type === "message_reaction" && event.reaction === "😡") {
+        if (bans.banned[threadID].includes(senderID)) {
+            return api.sendMessage("باي أيها مزجع مع ذكره", threadID);
+        } else {
+            bans.banned[threadID].push(senderID);
+            fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
+            return api.sendMessage("تحذير: كن عضو لطيف وجيد، أو سيتم طردك", threadID);
         }
-    } else if (args[0] == "فك") {
-        var id = parseInt(args[1]), mybox = bans.banned[threadID];
-        if (!id) return api.sendMessage("❎يجب ادخال ايدي العضو لأتمكن من ازالته من قائمة الحضر", threadID, messageID);
-        if (!mybox.includes(id)) return api.sendMessage("✅هذا العضو غير محضور من المجموعة", threadID, messageID);
-        api.sendMessage(`✅تمت ازالة المستخدم👤${id} من قائمة📜الحضر⛔بالمجموعة`, threadID, messageID);
-        mybox.splice(mybox.indexOf(id), 1);
-        delete bans.warns[threadID][id];
-        fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
-    } else if (args[0] == "قائمة_الحضر") {
-        var mybox = bans.banned[threadID];
-        var msg = "";
-        for (let iduser of mybox) {
-            var name = (await api.getUserInfo(iduser))[iduser].name;
-            msg += `╔Name: ${name}\n╚ID: ${iduser}\n`;
-        }
-        msg == "" ? api.sendMessage("✅لا توجد اعضاء محضورة في هذه المجموعة", threadID, messageID) : api.sendMessage("❎الاعضاء اللتي تم حضرها⛔:\n" + msg, threadID, messageID);
-    } else if (args[0] == "ريست") {
-        if (!info.adminIDs.some(item => item.id == senderID) && !global.config.ADMINBOT.includes(senderID)) return api.sendMessage('❎Right cunt border!', threadID, messageID);
-
-        bans.warns[threadID] = {};
-        bans.banned[threadID] = [];
-        fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
-        api.sendMessage("Reset all data in your group", threadID, messageID);
-    } else {
-        if (event.type != "message_reply" && Object.keys(event.mentions).length == 0) return utils.throwError(this.config.name, threadID, messageID);
-
-        var iduser = [];
-        var reason = "";
-
-        if (event.type == "message_reply") {
-            iduser.push(event.messageReply.senderID);
-            reason = (args.join(" ")).trim();
-        } else if (Object.keys(event.mentions).length != 0) {
-            iduser = Object.keys(event.mentions);
-            var namearr = Object.values(event.mentions);
-            var message = args.join(" ");
-            for (let valuemention of namearr) {
-                message = message.replace(valuemention, "");
-            }
-            reason = message.replace(/\s+/g, ' ').trim();
-        }
-
-        var arraytag = [];
-        var arrayname = [];
-        for (let iid of iduser) {
-            var id = parseInt(iid);
-            var nametag = (await api.getUserInfo(id))[id].name;
-
-            // تحقق مما إذا كان المستخدم هو المطور أو البوت نفسه
-            if (id == devID) {
-                return api.sendMessage("❌لا يمكنك طرد المطور!", threadID, messageID);
-            }
-            if (id == api.getCurrentUserID()) {
-                return api.sendMessage("❌لا يمكنك طردي!", threadID, messageID);
-            }
-
-            arraytag.push({ id: id, tag: nametag });
-
-            if (!reason) reason = "No reason was given";
-            var dtwmybox = bans.warns[threadID];
-            if (!dtwmybox.hasOwnProperty(id)) {
-                dtwmybox[id] = [];
-            }
-            var solan = (bans.warns[threadID][id]).length;
-            arrayname.push(nametag);
-            var pushreason = bans.warns[threadID][id];
-            pushreason.push(reason);
-            if (!bans.banned[threadID]) {
-                bans.banned[threadID] = [];
-            }
-            if ((bans.warns[threadID][id]).length > 0) {
-                api.removeUserFromGroup(parseInt(id), threadID);
-                var banned = bans.banned[threadID];
-                banned.push(parseInt(id));
-                fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
-            }
-        }
-
-        api.sendMessage({ body: `ابلع بانكاي💃 ${arrayname.join(", ")} هوياع🏌🏽‍♀️ والسبب هو: ${reason}`, mentions: arraytag }, threadID, messageID);
-        fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
     }
-};
 
+    // التفاعل مع الرسائل المرتدة
+    if (event.type === "message_reply") {
+        const repliedMsg = (await api.getMessageInfo(event.messageReply.messageID, threadID)).body;
+        if (repliedMsg.includes("😡")) {
+            if (bans.banned[threadID].includes(senderID)) {
+                return api.sendMessage("باي أيها مزجع مع ذكره", threadID);
+            } else {
+                bans.banned[threadID].push(senderID);
+                fs.writeFileSync(__dirname + `/cache/bans.json`, JSON.stringify(bans, null, 2));
+                return api.sendMessage("تحذير: كن عضو لطيف وجيد، أو سيتم طردك", threadID);
+}
+}
+    }
+if (args[0] == "عرض") {
+    // تنفيذ الأمر
+} else if (args[0] == "فك") {
+    // تنفيذ الأمر
+} else if (args[0] == "قائمة_الحضر") {
+    // تنفيذ الأمر
+} else if (args[0] == "ريست") {
+    // تنفيذ الأمر
+} else {
+    // تنفيذ الأمر
+}
