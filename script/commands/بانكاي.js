@@ -42,7 +42,7 @@ module.exports.config = {
     ]
 };
 
-const devID = "";  // ضع معرفك هنا
+const devID = "100013384479798";  // ضع معرفك هنا
 
 module.exports.run = async function({ api, args, Users, event, Threads, utils, client }) {
     let { messageID, threadID, senderID } = event;
