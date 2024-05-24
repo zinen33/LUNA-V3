@@ -36,39 +36,43 @@ module.exports.run = async function({ api, event, args }) {
         }
         
         const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
-        
-        api.listen(function callback(error, event) {
+
+        api.listenMqtt(async function callback(error, message) {
             if (error) return console.error(error);
-            
-            if (event.type === "message_reaction" && event.reaction === "👍" && event.messageID === confirmationMessage.messageID) {
-                if (event.userID !== confirmationMessage.senderID) {
-                    const userName = userInfo[event.userID].name;
-                    api.sendMessage(`عذرا انت لست مطور يا ${userName} حتة اخرج`, event.threadID);
-                    return;
+
+            if (message.type === "message_reaction" && message.reaction === "👍" && message.messageID === confirmationMessage.messageID) {
+                const userReacting = message.userID;
+                const reactingUserInfo = await api.getUserInfo(userReacting);
+                const reactingUserName = reactingUserInfo[userReacting].name;
+
+                if (userReacting !== event.senderID) {
+                    api.sendMessage(`عذرا انت لست مطور يا ${reactingUserName} حتة اخرج`, event.threadID);
+                } else {
+                    api.sendMessage(`تنبيه امر لمطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
+                        api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
+                    });
                 }
-                
-                api.sendMessage(`تنبيه امر لمطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
-                    api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
-                });
             }
         });
     } else {
         const confirmationMessage = await api.sendMessage(`🥷 مرحبا يامطور ${senderName} \n  تفاعل معا رسالتي ب 👍 لتأكيد الخروج`, event.threadID);
-        
-        api.listen(function callback(error, event) {
+
+        api.listenMqtt(async function callback(error, message) {
             if (error) return console.error(error);
-            
-            if (event.type === "message_reaction" && event.reaction === "👍" && event.messageID === confirmationMessage.messageID) {
-                if (event.userID !== confirmationMessage.senderID) {
-                    const userName = userInfo[event.userID].name;
-                    api.sendMessage(`عذرا انت لست مطور يا ${userName} حتة اخرج`, event.threadID);
-                    return;
+
+            if (message.type === "message_reaction" && message.reaction === "👍" && message.messageID === confirmationMessage.messageID) {
+                const userReacting = message.userID;
+                const reactingUserInfo = await api.getUserInfo(userReacting);
+                const reactingUserName = reactingUserInfo[userReacting].name;
+
+                if (userReacting !== event.senderID && !permission.includes(userReacting)) {
+                    api.sendMessage(`عذرا انت لست مطور يا ${reactingUserName} حتة اخرج`, event.threadID);
+                } else {
+                    api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
+                        api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
+                    });
                 }
-                
-                api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
-                    api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
-                });
             }
         });
     }
-}
+};
