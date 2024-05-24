@@ -21,7 +21,7 @@ module.exports.run = async function({ api, event, args }) {
 
     // تحقق إذا كان المستخدم محظورًا
     if (blockedUsers.has(userID)) {
-        return;
+        return api.sendMessage(`انتضــر 50 ثانية من فضـلك لـي اسـتخـدام الامر مرة اخرا ${userID}`, event.threadID);
     }
 
     // جلب اسم المستخدم
@@ -36,15 +36,13 @@ module.exports.run = async function({ api, event, args }) {
     const usageCount = userUsageCount.get(userID);
     
     if (usageCount >= 2) {
-        let message = ` تبا لك ألا تفهم لا يمكنك استخدام الأمر ثلاث مرات  ${userName}، أنت حقاً مزعج`;
-        if (usageCount === 2) {
-            message = `عذراً، يا ${userName}، لا يمكنك استخدام الأمر ثلاث مرات`;
-            userUsageCount.set(userID, usageCount + 1);
-        } else {
-            blockedUsers.add(userID);
-            message += ` ❌`;
-        }
-        return api.sendMessage(message, event.threadID);
+        userUsageCount.set(userID, usageCount + 1);
+        blockedUsers.add(userID);
+        setTimeout(() => {
+            blockedUsers.delete(userID);
+            userUsageCount.set(userID, 0);
+        }, 50000); // 50 ثانية
+        return api.sendMessage(`تبا لك، لماذا لا تفهم؟ استخدم الأمر بعد 50 ثانية، أنت حقاً مزعج ${userName}`, event.threadID);
     }
     
     userUsageCount.set(userID, usageCount + 1);
@@ -77,22 +75,29 @@ module.exports.run = async function({ api, event, args }) {
 
     async function callback(error, response, body) {
         const imgabc = [];
-        if (!error && response.statusCode == 200) {
+        if (!error &&        if (!error && response.statusCode == 200) {
             const arrMatch = body.match(/https:\/\/i\.pinimg\.com\/originals\/[^.]+\.jpg/g);
-            for(let i = 0; i < number; i++){
-                const t = await axios.get(`${arrMatch[i]}`, {
-                    responseType: "stream"
-                });
-                const o = t.data;
-                imgabc.push(o);
+            if (arrMatch && arrMatch.length > 0) {
+                for (let i = 0; i < number && i < arrMatch.length; i++) {
+                    const t = await axios.get(`${arrMatch[i]}`, {
+                        responseType: "stream"
+                    });
+                    const o = t.data;
+                    imgabc.push(o);
+                }
+                var msg = {
+                    body: `► 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧\n\n${name} - ${number}`,
+                    attachment: imgabc
+                };
+                return api.sendMessage(msg, event.threadID, event.messageID);
+            } else {
+                return api.sendMessage("لم يتم العثور على صور.", event.threadID);
             }
-            var msg = {
-                body: `► 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧\n\n${name} - ${number}`,
-                attachment: imgabc
-            };
-            return api.sendMessage(msg, event.threadID, event.messageID);
+        } else {
+            return api.sendMessage("حدث خطأ أثناء البحث عن الصور.", event.threadID);
         }
     }
 
     request(options, callback);
 };
+
