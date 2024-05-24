@@ -8,13 +8,45 @@ module.exports.config = {
   usages: "pin text - number",
   cooldowns: 0
 };
+
+const userUsageCount = new Map();
+
 module.exports.run = async function({ api, event, args }) {
     const axios = require("axios");
     const fs = require("fs-extra");
     const request = require("request");
+    
+    const userID = event.senderID;
+
+    // جلب اسم المستخدم
+    const userInfo = await api.getUserInfo(userID);
+    const userName = userInfo[userID].name;
+
+    // تحقق من عدد مرات استخدام المستخدم للأمر
+    if (!userUsageCount.has(userID)) {
+        userUsageCount.set(userID, 0);
+    }
+
+    const usageCount = userUsageCount.get(userID);
+    
+    if (usageCount >= 2) {
+        let message = `بوت تبا لك ألا تفهم لا يمكنك استخدام الأمر ثلاث مرات يا ${userName}، أنت حقاً مزعج`;
+        if (usageCount === 2) {
+            message = `عذراً، يا ${userName}، لا يمكنك استخدام الأمر ثلاث مرات`;
+        }
+        userUsageCount.set(userID, usageCount + 1);
+        return api.sendMessage(message, event.threadID);
+    }
+    
+    userUsageCount.set(userID, usageCount + 1);
+
     const name = args.join(" ").trim().replace(/\s+/g, " ").replace(/(\s+\|)/g, "|").replace(/\|\s+/g, "|").split("-")[0];
-    const number = args.join(" ").trim().replace(/\s+/g, " ").replace(/(\s+\|)/g, "|").replace(/\|\s+/g, "|").split("-")[1] || 6;
-    if(!name || !number ){ return api.sendMessage("Missing Data", event.threadID)}
+    const number = args.join(" ").trim().replace(/\s+/g, " ").replace(/(\s+\|)/g, "|").split("-")[1] || 6;
+
+    if (!name || !number) {
+        return api.sendMessage("Missing Data", event.threadID);
+    }
+
     var headers = {
         'authority': 'www.pinterest.com',
         'cache-control': 'max-age=0',
@@ -33,23 +65,25 @@ module.exports.run = async function({ api, event, args }) {
         url: 'https://www.pinterest.com/search/pins/?q=' + (encodeURIComponent(name)) + '&rs=typed&term_meta[]=' + (encodeURIComponent(name)) + '%7Ctyped',
         headers: headers
     };
-  async function callback(error, response, body) {
+
+    async function callback(error, response, body) {
         const imgabc = [];
         if (!error && response.statusCode == 200) {
             const arrMatch = body.match(/https:\/\/i\.pinimg\.com\/originals\/[^.]+\.jpg/g);
-for(let i = 0; i < number; i++){
-  const t = await axios.get(`${arrMatch[i]}`, {
-        responseType: "stream"
-      })
-  const o = t.data
-  imgabc.push(o)
-}
-          var msg = ({
-      body: `► 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧\n\n${name} - ${number}`,
-      attachment: imgabc
-     })
-    return api.sendMessage(msg, event.threadID, event.messageID)
+            for(let i = 0; i < number; i++){
+                const t = await axios.get(`${arrMatch[i]}`, {
+                    responseType: "stream"
+                });
+                const o = t.data;
+                imgabc.push(o);
+            }
+            var msg = {
+                body: `► 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧\n\n${name} - ${number}`,
+                attachment: imgabc
+            };
+            return api.sendMessage(msg, event.threadID, event.messageID);
         }
     }
+
     request(options, callback);
-                                                  }
+};
