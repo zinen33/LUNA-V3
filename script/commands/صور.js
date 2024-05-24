@@ -10,6 +10,7 @@ module.exports.config = {
 };
 
 const userUsageCount = new Map();
+const blockedUsers = new Set();
 
 module.exports.run = async function({ api, event, args }) {
     const axios = require("axios");
@@ -17,6 +18,11 @@ module.exports.run = async function({ api, event, args }) {
     const request = require("request");
     
     const userID = event.senderID;
+
+    // تحقق إذا كان المستخدم محظورًا
+    if (blockedUsers.has(userID)) {
+        return;
+    }
 
     // جلب اسم المستخدم
     const userInfo = await api.getUserInfo(userID);
@@ -30,11 +36,14 @@ module.exports.run = async function({ api, event, args }) {
     const usageCount = userUsageCount.get(userID);
     
     if (usageCount >= 2) {
-        let message = `بوت تبا لك ألا تفهم لا يمكنك استخدام الأمر ثلاث مرات يا ${userName}، أنت حقاً مزعج`;
+        let message = ` تبا لك ألا تفهم لا يمكنك استخدام الأمر ثلاث مرات  ${userName}، أنت حقاً مزعج`;
         if (usageCount === 2) {
             message = `عذراً، يا ${userName}، لا يمكنك استخدام الأمر ثلاث مرات`;
+            userUsageCount.set(userID, usageCount + 1);
+        } else {
+            blockedUsers.add(userID);
+            message += ` ❌`;
         }
-        userUsageCount.set(userID, usageCount + 1);
         return api.sendMessage(message, event.threadID);
     }
     
