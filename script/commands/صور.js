@@ -36,7 +36,7 @@ module.exports.run = async function({ api, event, args }) {
     const usageCount = userUsageCount.get(userID);
     
     if (usageCount >= 3) { 
-        let message = `بوت تبا لك ألا تفهم لا يمكنك استخدام الأمر أكثر من ثلاث مرات يا ${userName}، أنت حقاً مزعج ❌`;
+        let message = ` تبا لك ألا تفهم لا يمكنك استخدام الأمر أكثر من ثلاث مرات ${userName}، أنت حقاً مزعج ❌`;
         if (usageCount === 3) { 
             message = `عذراً، يا ${userName}، لا يمكنك استخدام الأمر أكثر من ثلاث مرات`;
             userUsageCount.set(userID, usageCount + 1);
