@@ -86,7 +86,7 @@
   "totp-generator": "",
   "unofficial-fb-chat-api": "^1.0.0",
   "yt-search": "^2.10.4",
-  "ytdl-core": "^4.11.5"
+  "ytdl-core": "^4.11.5",
   "bluebird": "^3.7.2"
  }
 }
