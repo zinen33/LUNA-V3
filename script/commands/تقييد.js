@@ -33,14 +33,14 @@ module.exports = {
       // إذا لم يكن البوت مقيدًا، تقييده وتحديث الإعدادات
       await threadsData.set(event.threadID, true, "settings.adbox");
       api.changeNickname(`𝙻𝚄𝙽𝙰︙➟❎`, event.threadID, api.getCurrentUserID());
-      Message.react("🔒");
-      return Message.reply(`تم تقييد البوت ✅\nالفاعل: ${senderName}`);
+      api.sendMessage(`تم تقييد البوت ✅\nالفاعل: ${senderName}`, event.threadID);
+      return api.setMessageReaction("🔒", event.messageID, (err) => {});
     } else {
       // إذا كان البوت مقيدًا، إلغاء التقييد وتحديث الإعدادات
       await threadsData.set(event.threadID, false, "settings.adbox");
       api.changeNickname(`𝙻𝚄𝙽𝙰︙➟✅`, event.threadID, api.getCurrentUserID());
-      Message.react("🔓");
-      return Message.reply(`تم الغاء تقييد البوت ✅\nالفاعل: ${senderName}`);
+      api.sendMessage(`تم الغاء تقييد البوت ✅\nالفاعل: ${senderName}`, event.threadID);
+      return api.setMessageReaction("🔓", event.messageID, (err) => {});
     }
   }
 };
