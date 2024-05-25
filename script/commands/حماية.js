@@ -4,10 +4,10 @@ const fs = require("fs"),
 module.exports.config = {
 name: "حماية",
 version: "1.0.8",
-hasPermssion: 0,
+hasPermssion: 1,
 credits: "نوت دفاين",
-description: "حماية اسم مجموعتك",
-commandCategory: "مسؤولي المجموعات",
+description: "ادمن المجموعات",
+commandCategory: "ادمن المجموعات",
 usages: "",
 cooldowns: 0
 };
