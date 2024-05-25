@@ -3,8 +3,8 @@ module.exports.config = {
   version: "0.0.1",
   hasPermssion: 0,
   credits: "meow",
-  description: "Pinterest search",
-  commandCategory: "tools",
+  description: "خدمات",
+  commandCategory: "خدمات",
   usages: "pin text - number",
   cooldowns: 0
 };
