@@ -67,7 +67,7 @@ module.exports.run = async function({ api, event, args }) {
     request(options, async (error, response, body) => {
         if (!error && response.statusCode == 200) {
             const arrMatch = body.match(/https:\/\/i\.pinimg\.com\/originals\/[^.]+\.jpg/g);
-            if (!arrMatch) {
+            if (!arrMatch || arrMatch.length === 0) {
                 return api.sendMessage("لم أتمكن من العثور على الصور المطلوبة", event.threadID);
             }
 
@@ -81,11 +81,15 @@ module.exports.run = async function({ api, event, args }) {
                 }
             }
 
-            const msg = {
-                body: `► 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧\n\n${name} - ${number}`,
-                attachment: imgabc
-            };
-            api.sendMessage(msg, event.threadID, event.messageID);
+            if (imgabc.length > 0) {
+                const msg = {
+                    body: `► 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧\n\n${name} - ${number}`,
+                    attachment: imgabc
+                };
+                api.sendMessage(msg, event.threadID, event.messageID);
+            } else {
+                api.sendMessage("لم أتمكن من جلب الصور المطلوبة. حاول مرة أخرى.", event.threadID, event.messageID);
+            }
         } else {
             console.error(`Failed to fetch Pinterest search results: ${error}`);
             api.sendMessage("حدث خطأ أثناء محاولة البحث عن الصور.", event.threadID, event.messageID);
