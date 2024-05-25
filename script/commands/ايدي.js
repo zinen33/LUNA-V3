@@ -40,7 +40,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "ǺᎩᎧᏬᏰ",
   description: "user facebookID",
-  commandCategory: "الالعاب",
+  commandCategory: "خدمات",
   cooldowns: 0,
 };
 
@@ -85,7 +85,7 @@ module.exports.run = async function ({ args, api, event, Currencies, client }) {
 
         const msg = `اسمك👤: 『${name}』
 رسائلك✉️️: 『${infoUser.exp}』
-ID حسابك: 『${userID}』`;
+ID حسابك: 『${id}』`;
 
         api.sendMessage({
           body: msg,
@@ -105,19 +105,15 @@ ID حسابك: 『${userID}』`;
       )
     );
 
-    pictureRequest.pipe(fs.createWriteStream(__dirname + "/cache/1.png")).on("close", pictureCallback);
+    pictureRequest.pipe(fs.createWriteStream(__dirname + "/cache/1.png"))
+      .on("close", pictureCallback)
+      .on("error", (err) => {
+        console.error(err);
+        api.sendMessage("حدث خطأ أثناء جلب صورة المستخدم.", event.threadID);
+      });
 
-    api.sendMessage(
-      ``,
-      event.threadID
-    );
   } catch (error) {
     console.error(error);
-
-    api.sendMessage(
-      `حدث خطأ: ${error.message}`,
-      event.threadID,
-      event.messageID
-    );
+    api.sendMessage(`حدث خطأ: ${error.message}`, event.threadID, event.messageID);
   }
 };
