@@ -7,9 +7,9 @@ module.exports.config = {
   version: "1.0.0",
   hasPermission: 1,
   credits: "Jonell Magallanes",
-  description: "حظر شخص عند قوله كلمة نامية أو محظورة",
+  description: "ادمن المجموعات",
   usePrefix: true,
-  commandCategory: "المالك",
+  commandCategory: "ادمن المجموعات",
   usages: "تشغيل | إيقاف",
   cooldowns: 5,
 };
