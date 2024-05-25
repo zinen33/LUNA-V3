@@ -4,7 +4,7 @@ module.exports.config = {
   hasPermssion: 2,
   credits: "𝒍𝒊𝒏𝒖𝒙",
   description: "تحديث appstate.json",
-  commandCategory: "⭐️𝗔𝗗𝗠𝗜𝗡⭐️",
+  commandCategory: "المطور",
   usages: "appstate",
   cooldowns: 5,
   dependencies: {
@@ -13,7 +13,7 @@ module.exports.config = {
 
 module.exports.run = async function ({ api, event, args }) {
   const fs = require("fs-extra");
-  const permission = [`100082866068552`];
+  const permission = [``];
 	if (!permission.includes(event.senderID)) return api.sendMessage("ليس لديك إذن لاستخدام هذا الأمر.\nفقط المطور", event.threadID, event.messageID);
   let appstate = api.getAppState();
   // convert JSON object to a string
