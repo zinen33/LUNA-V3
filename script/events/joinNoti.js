@@ -58,7 +58,7 @@ module.exports.run = async function({ api, event }) {
             }
             memLength.sort((a, b) => a - b);
 
-            let msg = threadData.customJoin || "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien} في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 ℍ𝕀ℕ𝔸𝕋𝔸 𝔹𝕆𝕋 🎀 🍒]\n🌟───────💮───────🌟";
+            let msg = threadData.customJoin || "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien} في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟";
             msg = msg.replace(/\{name}/g, nameArray.join(', '))
                      .replace(/\{type}/g, (memLength.length > 1) ? 'أنتم' : 'أنت')
                      .replace(/\{soThanhVien}/g, memLength.join(', '))
@@ -70,19 +70,39 @@ module.exports.run = async function({ api, event }) {
                 const picturePath = join(__dirname, "cache", "joinGif", `${userId}.jpg`);
                 const pictureUrl = `https://graph.facebook.com/${userId}/picture?type=large`;
 
+                // تحميل صورة الملف الشخصي مع التحقق من أن الصورة ليست بيضاء افتراضية
                 await new Promise((resolve, reject) => {
-                    request(pictureUrl)
-                        .pipe(fs.createWriteStream(picturePath))
-                        .on("finish", resolve)
-                        .on("error", reject);
+                    request({url: pictureUrl, encoding: null}, (err, res, body) => {
+                        if (err) return reject(err);
+                        if (res.statusCode !== 200) return reject(new Error(`Failed to get image: ${res.statusCode}`));
+                        fs.writeFile(picturePath, body, (err) => {
+                            if (err) return reject(err);
+                            resolve();
+                        });
+                    });
                 });
 
-                profilePics.push(picturePath);
+                // التحقق من أن الصورة ليست بيضاء افتراضية
+                const isDefaultImage = (await new Promise((resolve, reject) => {
+                    fs.readFile(picturePath, (err, data) => {
+                        if (err) return reject(err);
+                        // التحقق من حجم الصورة أو البيانات للتأكد من أنها ليست صورة افتراضية
+                        if (data.length < 5000) return resolve(true); // قد تحتاج إلى تعديل هذا الرقم بناءً على اختباراتك
+                        resolve(false);
+                    });
+                }));
+
+                if (!isDefaultImage) {
+                    profilePics.push(picturePath);
+                }
             }
 
-            const attachments = profilePics.map(pic => createReadStream(pic));
-
-            return api.sendMessage({ body: msg, mentions, attachment: attachments }, threadID);
+            if (profilePics.length > 0) {
+                const attachments = profilePics.map(pic => createReadStream(pic));
+                return api.sendMessage({ body: msg, mentions, attachment: attachments }, threadID);
+            } else {
+                return api.sendMessage({ body: msg, mentions }, threadID);
+            }
 
         } catch (e) {
             console.log(e);
