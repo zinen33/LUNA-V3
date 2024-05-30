@@ -80,7 +80,10 @@ module.exports.run = async function({ api, event, args }) {
                 if (userReacting !== event.senderID && !permission.includes(userReacting)) {
                     api.sendMessage(getRandomResponse(reactingUserName), event.threadID);
                 } else {
-                    api.sendMessage(`🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`, event.threadID, () => {
+                    const finalMessage = userReacting === event.senderID 
+                        ? `🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${senderName} لمزيد من التفاصيل 🔒`
+                        : `🥷 تنبيه امر المطور بالخروج \n🔒 لا يمكن إعادة الانضمام مرة أخرى تواصل مع المطور ${reactingUserName} لمزيد من التفاصيل 🔒`;
+                    api.sendMessage(finalMessage, event.threadID, () => {
                         api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
                     });
                 }
@@ -88,3 +91,4 @@ module.exports.run = async function({ api, event, args }) {
         });
     }
 };
+                
