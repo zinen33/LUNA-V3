@@ -40,7 +40,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "ǺᎩᎧᏬᏰ",
   description: "user facebookID",
-  commandCategory: "خدمات",
+  commandCategory: "🎮الالعاب🎮",
   cooldowns: 0,
 };
 
@@ -71,7 +71,7 @@ module.exports.run = async function ({ args, api, event, Currencies, client }) {
     const userId = event.type == "message_reply" ? event.messageReply.senderID : event.senderID;
     const infoUser = exp.find(info => parseInt(info.uid) === parseInt(userId));
 
-    const id = event.type == "message_reply" ? event.messageReply.senderID : event.senderID;
+    const id = userId;
     const user_data = await api.getUserInfo(id);
     const name = user_data[id].name;
     const gender = getUserGender(user_data[id].gender);
@@ -83,15 +83,13 @@ module.exports.run = async function ({ args, api, event, Currencies, client }) {
 
         const rank = getRank(infoUser.exp);
 
-        const msg = `اسمك👤: 『${name}』
-رسائلك✉️️: 『${infoUser.exp}』
-ID حسابك: 『${id}』`;
+        const msg = `اسمك👤: 『${name}』\nرسائلك✉️️: 『${infoUser.exp}』\nتصنيفك: 『${rank}』\nالبنك💰: 『${moneyFromFile}💲』\nالكاش💰: 『${moneyFromUserData}💵』`;
 
         api.sendMessage({
           body: msg,
-          attachment: fs.createReadStream(__dirname + "/cache/1.png"),
+          attachment: fs.createReadStream(join(__dirname, "/cache/1.png")),
         }, event.threadID, () => {
-          fs.unlinkSync(__dirname + "/cache/1.png");
+          fs.unlinkSync(join(__dirname, "/cache/1.png"));
         });
 
       } catch (error) {
@@ -105,15 +103,16 @@ ID حسابك: 『${id}』`;
       )
     );
 
-    pictureRequest.pipe(fs.createWriteStream(__dirname + "/cache/1.png"))
-      .on("close", pictureCallback)
-      .on("error", (err) => {
-        console.error(err);
-        api.sendMessage("حدث خطأ أثناء جلب صورة المستخدم.", event.threadID);
-      });
+    pictureRequest.pipe(fs.createWriteStream(join(__dirname, "/cache/1.png"))).on("close", pictureCallback);
 
   } catch (error) {
     console.error(error);
-    api.sendMessage(`حدث خطأ: ${error.message}`, event.threadID, event.messageID);
+
+    api.sendMessage(
+      `حدث خطأ: ${error.message}`,
+      event.threadID,
+      event.messageID
+    );
   }
 };
+    
