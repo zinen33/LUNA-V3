@@ -1,15 +1,14 @@
-const axios = require('axios');
-
 module.exports.config = {
     name: "joinNoti",
     eventType: ["log:subscribe"],
     version: "1.0.1",
-    credits: "CatalizCS", // fixing ken gusler
+    credits: "CatalizCS",
     description: "Notify bot or group member with random gif/photo/video",
     dependencies: {
         "fs-extra": "",
         "path": "",
-        "pidusage": ""
+        "pidusage": "",
+        "axios": ""
     }
 };
 
@@ -24,13 +23,13 @@ module.exports.onLoad = function () {
     if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
 
     return;
-};
+}
 
-module.exports.run = async function ({ api, event }) {
+module.exports.run = async function({ api, event }) {
     const { join } = global.nodemodule["path"];
     const { threadID } = event;
     const fs = require("fs");
-
+    
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
         api.changeNickname(`{ ${global.config.PREFIX} } × ${(!global.config.BOTNAME) ? "البوت" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
         return api.sendMessage("إفسحو المجال قد أتت الملكة 😎", event.threadID, () => api.sendMessage({
@@ -47,7 +46,7 @@ module.exports.run = async function ({ api, event }) {
             const pathGif = join(path, `${threadID}.gif`);
 
             var mentions = [], nameArray = [], memLength = [], i = 0;
-
+            
             for (const participant of event.logMessageData.addedParticipants) {
                 const userName = participant.fullName;
                 const id = participant.userFbId;
@@ -57,14 +56,14 @@ module.exports.run = async function ({ api, event }) {
 
                 const profilePictureUrl = await getAvatarUrl(id);
                 const profilePicturePath = join(__dirname, "cache", "joinGif", `${id}.jpg`);
-
+                
                 await downloadImage(profilePictureUrl, profilePicturePath);
             }
 
             memLength.sort((a, b) => a - b);
-
-            let msg = (typeof threadData.customJoin == "undefined")
-                ? "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien}  في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟"
+            
+            let msg = (typeof threadData.customJoin == "undefined") 
+                ? "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien}  في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟" 
                 : threadData.customJoin;
             msg = msg
                 .replace(/\{name}/g, nameArray.join(', '))
@@ -91,7 +90,7 @@ module.exports.run = async function ({ api, event }) {
             return console.log(e);
         }
     }
-};
+}
 
 async function downloadImage(url, path) {
     const { createWriteStream } = require('fs');
@@ -108,8 +107,12 @@ async function downloadImage(url, path) {
 }
 
 async function getAvatarUrl(userID) {
+    const axios = require('axios');
     if (isNaN(userID)) {
-        throw new Error(`The first argument (userID) must be a number, not ${typeof userID}`);
+        throw new CustomError({
+            name: "INVALID_USER_ID",
+            message: `The first argument (userID) must be a number, not ${typeof userID}`
+        });
     }
     try {
         const user = await axios.post(`https://www.facebook.com/api/graphql/`, null, {
@@ -122,4 +125,5 @@ async function getAvatarUrl(userID) {
     } catch (err) {
         return "https://i.ibb.co/bBSpr5v/143086968-2856368904622192-1959732218791162458-n.png";
     }
-            }
+                   }
+                
