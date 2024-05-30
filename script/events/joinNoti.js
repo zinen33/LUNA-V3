@@ -109,21 +109,20 @@ async function downloadImage(url, path) {
 async function getAvatarUrl(userID) {
     const axios = require('axios');
     if (isNaN(userID)) {
-        throw new CustomError({
-            name: "INVALID_USER_ID",
-            message: `The first argument (userID) must be a number, not ${typeof userID}`
-        });
+        throw new Error(`The first argument (userID) must be a number, not ${typeof userID}`);
     }
     try {
-        const user = await axios.post(`https://www.facebook.com/api/graphql/`, null, {
+        const response = await axios.post('https://www.facebook.com/api/graphql/', null, {
             params: {
                 doc_id: "5341536295888250",
                 variables: JSON.stringify({ height: 500, scale: 1, userID, width: 500 })
             }
         });
-        return user.data.data.profile.profile_picture.uri;
+        const profilePictureUri = response.data.data.profile.profile_picture.uri;
+        return profilePictureUri ? profilePictureUri : "https://i.ibb.co/bBSpr5v/143086968-2856368904622192-1959732218791162458-n.png";
     } catch (err) {
+        console.error('Error fetching avatar URL:', err.message);
         return "https://i.ibb.co/bBSpr5v/143086968-2856368904622192-1959732218791162458-n.png";
     }
-                   }
-                
+        }
+            
