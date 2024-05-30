@@ -16,7 +16,7 @@ module.exports.onLoad = function () {
     const { join } = global.nodemodule["path"];
 
     const path = join(__dirname, "cache", "joinGif");
-    if (!existsSync(path)) mkdirSync(path, { recursive: true });    
+    if (!existsSync(path)) mkdirSync(path, { recursive: true });
 
     const path2 = join(__dirname, "cache", "joinGif", "randomgif");
     if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
@@ -24,11 +24,11 @@ module.exports.onLoad = function () {
     return;
 }
 
-module.exports.run = async function({ api, event }) {
+module.exports.run = async function ({ api, event }) {
     const { join } = global.nodemodule["path"];
     const { threadID } = event;
     const fs = require("fs");
-    
+
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
         api.changeNickname(`{ ${global.config.PREFIX} } × ${(!global.config.BOTNAME) ? "البوت" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
         return api.sendMessage("إفسحو المجال قد أتت الملكة 😎", event.threadID, () => api.sendMessage({
@@ -42,7 +42,6 @@ module.exports.run = async function({ api, event }) {
 
             const threadData = global.data.threadData.get(parseInt(threadID)) || {};
             const path = join(__dirname, "cache", "joinGif");
-            const pathGif = join(path, `${threadID}.gif`);
 
             var mentions = [], nameArray = [], memLength = [], i = 0;
             
@@ -60,9 +59,9 @@ module.exports.run = async function({ api, event }) {
             }
 
             memLength.sort((a, b) => a - b);
-            
-            let msg = (typeof threadData.customJoin == "undefined") 
-                ? "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien}  في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟" 
+
+            let msg = (typeof threadData.customJoin == "undefined")
+                ? "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien}  في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟"
                 : threadData.customJoin;
             msg = msg
                 .replace(/\{name}/g, nameArray.join(', '))
@@ -75,13 +74,17 @@ module.exports.run = async function({ api, event }) {
             const randomPath = readdirSync(join(__dirname, "cache", "joinGif", "randomgif"));
 
             let formPush;
-            if (existsSync(pathGif)) {
-                formPush = { body: msg, attachment: createReadStream(pathGif), mentions };
-            } else if (randomPath.length != 0) {
+            if (randomPath.length != 0) {
                 const pathRandom = join(__dirname, "cache", "joinGif", "randomgif", `${randomPath[Math.floor(Math.random() * randomPath.length)]}`);
                 formPush = { body: msg, attachment: createReadStream(pathRandom), mentions };
             } else {
                 formPush = { body: msg, mentions };
+            }
+
+            // Add profile pictures to the formPush object
+            for (const participant of event.logMessageData.addedParticipants) {
+                const profilePicturePath = join(__dirname, "cache", "joinGif", `${participant.userFbId}.jpg`);
+                formPush.attachment = formPush.attachment ? [...formPush.attachment, createReadStream(profilePicturePath)] : [createReadStream(profilePicturePath)];
             }
 
             return api.sendMessage(formPush, threadID);
@@ -103,4 +106,5 @@ async function downloadImage(url, path) {
             .on('finish', () => resolve())
             .on('error', e => reject(e));
     });
-                            }
+                               }
+                
