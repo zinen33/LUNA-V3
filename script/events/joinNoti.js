@@ -13,23 +13,23 @@ module.exports.config = {
 };
 
 module.exports.onLoad = function () {
-    const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
-    const { join } = global.nodemodule["path"];
+    const { existsSync, mkdirSync } = require("fs-extra");
+    const { join } = require("path");
 
     const path = join(__dirname, "cache", "joinGif");
     if (!existsSync(path)) mkdirSync(path, { recursive: true });
 
     const path2 = join(__dirname, "cache", "joinGif", "randomgif");
     if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
-
-    return;
-}
+};
 
 module.exports.run = async function({ api, event }) {
-    const { join } = global.nodemodule["path"];
+    const { join } = require("path");
+    const fs = require("fs-extra");
+    const axios = require("axios");
+
     const { threadID } = event;
-    const fs = require("fs");
-    
+
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
         api.changeNickname(`{ ${global.config.PREFIX} } × ${(!global.config.BOTNAME) ? "البوت" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
         return api.sendMessage("إفسحو المجال قد أتت الملكة 😎", event.threadID, () => api.sendMessage({
@@ -38,7 +38,7 @@ module.exports.run = async function({ api, event }) {
         }, threadID));
     } else {
         try {
-            const { createReadStream, existsSync, mkdirSync, readdirSync } = global.nodemodule["fs-extra"];
+            const { createReadStream, existsSync, mkdirSync, readdirSync } = fs;
             let { threadName, participantIDs } = await api.getThreadInfo(threadID);
 
             const threadData = global.data.threadData.get(parseInt(threadID)) || {};
@@ -87,10 +87,10 @@ module.exports.run = async function({ api, event }) {
 
             return api.sendMessage(formPush, threadID);
         } catch (e) {
-            return console.log(e);
+            console.log(e);
         }
     }
-}
+};
 
 async function downloadImage(url, path) {
     const { createWriteStream } = require('fs');
@@ -125,4 +125,4 @@ async function getAvatarUrl(userID) {
         return "https://i.ibb.co/bBSpr5v/143086968-2856368904622192-1959732218791162458-n.png";
     }
         }
-            
+                
