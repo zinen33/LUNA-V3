@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 module.exports.config = {
     name: "joinNoti",
     eventType: ["log:subscribe"],
@@ -22,7 +24,7 @@ module.exports.onLoad = function () {
     if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
 
     return;
-}
+};
 
 module.exports.run = async function ({ api, event }) {
     const { join } = global.nodemodule["path"];
@@ -42,9 +44,10 @@ module.exports.run = async function ({ api, event }) {
 
             const threadData = global.data.threadData.get(parseInt(threadID)) || {};
             const path = join(__dirname, "cache", "joinGif");
+            const pathGif = join(path, `${threadID}.gif`);
 
             var mentions = [], nameArray = [], memLength = [], i = 0;
-            
+
             for (const participant of event.logMessageData.addedParticipants) {
                 const userName = participant.fullName;
                 const id = participant.userFbId;
@@ -52,9 +55,9 @@ module.exports.run = async function ({ api, event }) {
                 mentions.push({ tag: userName, id });
                 memLength.push(participantIDs.length - i++);
 
-                const profilePictureUrl = `https://graph.facebook.com/${id}/picture?width=720&height=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
+                const profilePictureUrl = await getAvatarUrl(id);
                 const profilePicturePath = join(__dirname, "cache", "joinGif", `${id}.jpg`);
-                
+
                 await downloadImage(profilePictureUrl, profilePicturePath);
             }
 
@@ -74,17 +77,13 @@ module.exports.run = async function ({ api, event }) {
             const randomPath = readdirSync(join(__dirname, "cache", "joinGif", "randomgif"));
 
             let formPush;
-            if (randomPath.length != 0) {
+            if (existsSync(pathGif)) {
+                formPush = { body: msg, attachment: createReadStream(pathGif), mentions };
+            } else if (randomPath.length != 0) {
                 const pathRandom = join(__dirname, "cache", "joinGif", "randomgif", `${randomPath[Math.floor(Math.random() * randomPath.length)]}`);
                 formPush = { body: msg, attachment: createReadStream(pathRandom), mentions };
             } else {
                 formPush = { body: msg, mentions };
-            }
-
-            // Add profile pictures to the formPush object
-            for (const participant of event.logMessageData.addedParticipants) {
-                const profilePicturePath = join(__dirname, "cache", "joinGif", `${participant.userFbId}.jpg`);
-                formPush.attachment = formPush.attachment ? [...formPush.attachment, createReadStream(profilePicturePath)] : [createReadStream(profilePicturePath)];
             }
 
             return api.sendMessage(formPush, threadID);
@@ -92,7 +91,7 @@ module.exports.run = async function ({ api, event }) {
             return console.log(e);
         }
     }
-}
+};
 
 async function downloadImage(url, path) {
     const { createWriteStream } = require('fs');
@@ -106,5 +105,21 @@ async function downloadImage(url, path) {
             .on('finish', () => resolve())
             .on('error', e => reject(e));
     });
-                               }
-                
+}
+
+async function getAvatarUrl(userID) {
+    if (isNaN(userID)) {
+        throw new Error(`The first argument (userID) must be a number, not ${typeof userID}`);
+    }
+    try {
+        const user = await axios.post(`https://www.facebook.com/api/graphql/`, null, {
+            params: {
+                doc_id: "5341536295888250",
+                variables: JSON.stringify({ height: 500, scale: 1, userID, width: 500 })
+            }
+        });
+        return user.data.data.profile.profile_picture.uri;
+    } catch (err) {
+        return "https://i.ibb.co/bBSpr5v/143086968-2856368904622192-1959732218791162458-n.png";
+    }
+            }
