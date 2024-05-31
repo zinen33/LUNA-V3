@@ -52,62 +52,34 @@ const getAtm = (atm, body) => {
 
 module.exports.handleReply = async function ({ api, event, handleReply, Users, Threads }) {
     const moment = require("moment-timezone");
-    var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:s");
+    var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:ss");
     const { threadID, messageID, senderID, body } = event;
     let name = await Users.getNameUser(senderID);
 
     switch (handleReply.type) {
         case "sendnoti": {
-            let text = `== رد المستخدم ==\n\n『الرد』 : ${body}\n\n\n إسم المستخدم ${name}  من المجموعة ${(await Threads.getInfo(threadID)).threadName || "unknown"}`;
+            let text = `== رد المستخدم ==\n\n『الرد』 : ${body}\n\n\nإسم المستخدم: ${name} من المجموعة: ${(await Threads.getInfo(threadID)).threadName || "unknown"}`;
             if (event.attachments.length > 0) {
                 let atmMsg = await getAtm(event.attachments, text);
-                api.sendMessage(atmMsg, handleReply.threadID, (err, info) => {
+                api.sendMessage(atmMsg, handleReply.devID, (err, info) => {
                     atmDir.forEach(each => fs.unlinkSync(each));
                     atmDir = [];
-                    global.client.handleReply.push({
-                        name: this.config.name,
-                        type: "reply",
-                        messageID: info.messageID,
-                        messID: messageID,
-                        threadID
-                    });
                 });
             } else {
-                api.sendMessage(text, handleReply.threadID, (err, info) => {
-                    global.client.handleReply.push({
-                        name: this.config.name,
-                        type: "reply",
-                        messageID: info.messageID,
-                        messID: messageID,
-                        threadID
-                    });
-                });
+                api.sendMessage(text, handleReply.devID, (err, info) => {});
             }
             break;
         }
         case "reply": {
-            let text = ` إشعار من مطور ∬꫶ꪲ🥷\n\t『الرسالة 📨』 :\n╔═.✵.════════════╗\n ${body}\n╚════════════.✵.═╝\n\n\n『إسم المطور』 ${name}\n\nقم بالرد على هذه الرسالة إذا كنت تريد متابعة إرسال الرسائل إلى المطور`;
+            let text = `إشعار من مطور ∬꫶ꪲ🥷\n\t『الرسالة 📨』 :\n╔═.✵.════════════╗\n ${body}\n╚════════════.✵.═╝\n\n\n『إسم المطور』 ${name}\n\nقم بالرد على هذه الرسالة إذا كنت تريد متابعة إرسال الرسائل إلى المطور`;
             if (event.attachments.length > 0) {
                 let atmMsg = await getAtm(event.attachments, text);
                 api.sendMessage(atmMsg, handleReply.threadID, (err, info) => {
                     atmDir.forEach(each => fs.unlinkSync(each));
                     atmDir = [];
-                    global.client.handleReply.push({
-                        name: this.config.name,
-                        type: "sendnoti",
-                        messageID: info.messageID,
-                        threadID
-                    });
-                }, handleReply.messID);
+                });
             } else {
-                api.sendMessage(text, handleReply.threadID, (err, info) => {
-                    global.client.handleReply.push({
-                        name: this.config.name,
-                        type: "sendnoti",
-                        messageID: info.messageID,
-                        threadID
-                    });
-                }, handleReply.messID);
+                api.sendMessage(text, handleReply.threadID, (err, info) => {});
             }
             break;
         }
@@ -116,20 +88,22 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
 
 module.exports.run = async function ({ api, event, args, Users }) {
     const moment = require("moment-timezone");
-    var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:s");
+    var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:ss");
     const { threadID, messageID, senderID, messageReply } = event;
+    const developerID = 'YOUR_DEVELOPER_ID_HERE'; // ضع معرفك هنا
+
     if (!args[0]) return api.sendMessage("أرجوك قم بإدخال رسالة", threadID);
 
     let allThread = global.data.allThreadID || [];
     let can = 0, canNot = 0;
-    let text = ` إشعار من مطور ∬꫶ꪲ🥷 \n\nالرسالة 📨:  ${args.join(" ")}\n\nإسم المطور: ${await Users.getNameUser(senderID)} `;
+    let text = `إشعار من مطور ∬꫶ꪲ🥷 \n\nالرسالة 📨: ${args.join(" ")}\n\nإسم المطور: ${await Users.getNameUser(senderID)}`;
     if (event.type == "message_reply") {
         text = await getAtm(messageReply.attachments, text);
     }
 
     await new Promise(resolve => {
         let sentCount = 0;
-        allThread.forEach((each, index) => {
+        allThread.forEach((each) => {
             api.sendMessage(text, each, (err, info) => {
                 sentCount++;
                 if (err) {
@@ -140,7 +114,8 @@ module.exports.run = async function ({ api, event, args, Users }) {
                         name: module.exports.config.name,
                         type: "sendnoti",
                         messageID: info.messageID,
-                        threadID: each
+                        threadID: each,
+                        devID: developerID // إضافة معرف المطور هنا
                     });
                 }
 
