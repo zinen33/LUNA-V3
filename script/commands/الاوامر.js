@@ -11,11 +11,11 @@ module.exports = {
   },
   run: async ({ api, event }) => {
     try {
-      const fs = require("fs-extra");
+      const imageUrl = "رابط_الصورة_هنا";
       api.sendMessage(
         {
           body: menux,
-          attachment: fs.createReadStream(__dirname + "/tmp/img.jpg"),
+          attachment: await getStreamFromURL(imageUrl),
         },
         event.threadID,
         (err, info) => {
@@ -98,3 +98,15 @@ const menux = ` ❍━━❪•الأوامــــر الرئيســية•❫
 ⌔|↜{ المـــطــور } ← m.me/100044725279836
 ⌔|↜{ المـــطــور } ← m.me/100013384479798
 `;
+
+// Helper function to get a readable stream from a URL
+const getStreamFromURL = async (url) => {
+  const axios = require('axios');
+  const response = await axios({
+    url,
+    method: 'GET',
+    responseType: 'stream'
+  });
+  return response.data;
+};
+  
