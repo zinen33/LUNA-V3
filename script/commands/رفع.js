@@ -1,5 +1,4 @@
 const axios = require("axios");
-const moment = require("moment-timezone");
 
 class Imgur {
   constructor() {
@@ -24,7 +23,7 @@ class Modules extends Imgur {
     super();
   }
 
-get config() {
+  get config() {
     return {
       name: "رفع",
       version: "1.0.0",
@@ -36,24 +35,24 @@ get config() {
       usages: "رد على صورة",
       cooldowns: 5
     };
-  } 
+  }
 
   run = async ({ api, event }) => {
-    const startTime = Date.now(); 
-
-    var array = [];
-    if ("message_reply" != event.type || event.messageReply.attachments.length < 0) return api.sendMessage("[✨]➜ رد على صورة او مقطع", event.threadID, event.messageID);
-    for (let { url } of event.messageReply.attachments) await this.uploadImage(url).then((res => array.push(res))).catch((err => console.log(err)));
+    if ("message_reply" != event.type || event.messageReply.attachments.length <= 0) {
+      return api.sendMessage("[✨]➜ رد على صورة او مقطع", event.threadID, event.messageID);
+    }
     
-    const userInfo = await api.getUserInfo(event.senderID);
-    const userName = userInfo[event.senderID].name;
+    const links = [];
+    for (let { url } of event.messageReply.attachments) {
+      try {
+        const link = await this.uploadImage(url);
+        links.push(link);
+      } catch (err) {
+        console.log(err);
+      }
+    }
 
-    const endTime = Date.now(); 
-    const mohamed = (endTime - startTime) / 1000; 
-    
-    const mohamed1 = moment.tz("Africa/Algiers").format("YYYY-MM-DD HH:mm:ss");
-
-    return api.sendMessage(`${array.join("\n")}`, event.threadID, event.messageID);
+    return api.sendMessage(links.join("\n"), event.threadID, event.messageID);
   }
 }
 
