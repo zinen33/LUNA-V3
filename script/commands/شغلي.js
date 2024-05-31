@@ -29,24 +29,26 @@ module.exports.run = async ({ api, event }) => {
   const userId = event.senderID;
 
   if (!usageLimits[userId]) {
-    usageLimits[userId] = { count: 0, timeout: null, warned: false };
+    usageLimits[userId] = { count: 0, timeout: null, warned: 0 };
   }
 
   if (usageLimits[userId].count >= 3) {
-    if (!usageLimits[userId].warned) {
-      usageLimits[userId].warned = true;
+    if (usageLimits[userId].warned < 2) {
+      usageLimits[userId].warned += 1;
       if (usageLimits[userId].timeout === null) {
         usageLimits[userId].timeout = setTimeout(() => {
-          usageLimits[userId] = { count: 0, timeout: null, warned: false };
+          usageLimits[userId] = { count: 0, timeout: null, warned: 0 };
         }, 50000); // 50 seconds
       }
       const userInfo = await api.getUserInfo(userId);
       const userName = userInfo[userId].name;
-      return api.sendMessage(`بوت: اعتذر لايمكنك استخدام الأمر أكثر من 3 مرات لتجنب الحضر يا ${userName}`, event.threadID);
+      const warningMessages = [
+        `اعتذر لايمكنك استخدام الأمر أكثر من 3 مرات لتجنب الحضر يا ${userName}`,
+        `ألا تفهم لايمكنك استخدام الأمر ايها تبا يا ${userName}`
+      ];
+      return api.sendMessage(warningMessages[usageLimits[userId].warned - 1], event.threadID);
     } else {
-      const userInfo = await api.getUserInfo(userId);
-      const userName = userInfo[userId].name;
-      return api.sendMessage(`بوت: ألا تفهم لايمكنك استخدام الأمر ايها تبا يا ${userName}`, event.threadID);
+      return;
     }
   }
 
@@ -113,3 +115,4 @@ module.exports.run = async ({ api, event }) => {
     api.sendMessage('حدث خطأ أثناء معالجة الأمر.', event.threadID);
   }
 };
+        
