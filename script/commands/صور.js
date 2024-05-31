@@ -28,13 +28,13 @@ module.exports.run = async function({ api, event, args }) {
       if (usageLimits[userId].timeout === null) {
         usageLimits[userId].timeout = setTimeout(() => {
           usageLimits[userId] = { count: 0, timeout: null, warned: 0 };
-        }, 50000); // 50 seconds
+        }, 3600000); // 1 hour
       }
       const userInfo = await api.getUserInfo(userId);
       const userName = userInfo[userId].name;
       const warningMessages = [
-        ` اعتذر لايمكنك استخدام الأمر أكثر من 3 مرات لتجنب الحضر يا ${userName}`,
-        ` ألا تفهم لايمكنك استخدام الأمر ايها تبا يا ${userName}`
+        `بوت: اعتذر لايمكنك استخدام الأمر أكثر من 3 مرات لتجنب الحضر يا ${userName}`,
+        `بوت: ألا تفهم لايمكنك استخدام الأمر ايها تبا يا ${userName}`
       ];
       return api.sendMessage(warningMessages[usageLimits[userId].warned - 1], event.threadID);
     } else {
