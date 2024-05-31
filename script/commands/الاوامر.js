@@ -11,7 +11,7 @@ module.exports = {
   },
   run: async ({ api, event }) => {
     try {
-      const imageUrl = "https://i.imgur.com/yTdBP6X.mp4";
+      const imageUrl = "https://i.postimg.cc/HWBqxw20/12c5cd02108256b15327871c74dacd36.jpg";
       api.sendMessage(
         {
           body: menux,
