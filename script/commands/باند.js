@@ -18,11 +18,23 @@ module.exports.run = async function ({ api, event, Threads, args }) {
     const bannedGroupsFile = "./cache/banned_groups.json";
 
     // Check if the command is executed in a banned group
-    const bannedGroups = require(bannedGroupsFile);
-    if (bannedGroups.includes(event.threadID)) {
+    if (isGroupBanned(event.threadID, bannedGroupsFile)) {
         return api.sendMessage("أنا آسف، لا يمكنني تنفيذ هذا الأمر في المجموعات المحظورة.", event.threadID);
     }
 
     // Send the message
     api.sendMessage(message, event.threadID);
 };
+
+function isGroupBanned(threadID, bannedGroupsFile) {
+    // Check if the threadID is in the banned groups file
+    try {
+        const bannedGroups = require(bannedGroupsFile);
+        if (bannedGroups.includes(threadID)) {
+            return true;
+        }
+    } catch (error) {
+        console.error("Error reading banned groups file:", error);
+    }
+    return false;
+}
