@@ -1,3 +1,5 @@
+const usageLimits = {};
+
 module.exports.config = {
   name: "شغلي",
   version: "2.0.4",
@@ -23,6 +25,27 @@ module.exports.run = async ({ api, event }) => {
   const ytdl = require("ytdl-core");
   const request = require("request");
   const yts = require("yt-search");
+
+  const userId = event.senderID;
+
+  if (!usageLimits[userId]) {
+    usageLimits[userId] = { count: 0, timeout: null };
+  }
+
+  if (usageLimits[userId].count >= 3) {
+    if (usageLimits[userId].timeout === null) {
+      usageLimits[userId].timeout = setTimeout(() => {
+        usageLimits[userId].count = 0;
+        usageLimits[userId].timeout = null;
+      }, 50000); // 50 seconds
+
+      return api.sendMessage(`بوت: اعتذر لايمكنك استخدام الأمر أكثر من 3 مرات لتجنب الحضر @${userId}`, event.threadID);
+    } else {
+      return api.sendMessage(`بوت: ألا تفهم لايمكنك استخدام الأمر ايها تبا @${userId}`, event.threadID);
+    }
+  }
+
+  usageLimits[userId].count += 1;
 
   const input = event.body;
   const text = input.substring(12);
@@ -85,3 +108,4 @@ module.exports.run = async ({ api, event }) => {
     api.sendMessage('حدث خطأ أثناء معالجة الأمر.', event.threadID);
   }
 };
+    
