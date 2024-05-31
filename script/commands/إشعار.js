@@ -61,12 +61,19 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
             let text = `== رد المستخدم ==\n\n『الرد』 : ${body}\n\n\nإسم المستخدم: ${name} من المجموعة: ${(await Threads.getInfo(threadID)).threadName || "unknown"}`;
             if (event.attachments.length > 0) {
                 let atmMsg = await getAtm(event.attachments, text);
-                api.sendMessage(atmMsg, handleReply.devID, (err, info) => {
-                    atmDir.forEach(each => fs.unlinkSync(each));
-                    atmDir = [];
-                });
+                for (let devID of handleReply.devIDs) {
+                    api.sendMessage(atmMsg, devID, (err, info) => {
+                        if (err) console.log(err);
+                    });
+                }
+                atmDir.forEach(each => fs.unlinkSync(each));
+                atmDir = [];
             } else {
-                api.sendMessage(text, handleReply.devID, (err, info) => {});
+                for (let devID of handleReply.devIDs) {
+                    api.sendMessage(text, devID, (err, info) => {
+                        if (err) console.log(err);
+                    });
+                }
             }
             break;
         }
@@ -90,7 +97,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
     const moment = require("moment-timezone");
     var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:ss");
     const { threadID, messageID, senderID, messageReply } = event;
-    const developerID = 'YOUR_DEVELOPER_ID_HERE'; // ضع معرفك هنا
+    const developerIDs = ['100013384479798', '100044725279836']; // ضع معرفي المطورين هنا
 
     if (!args[0]) return api.sendMessage("أرجوك قم بإدخال رسالة", threadID);
 
@@ -115,7 +122,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
                         type: "sendnoti",
                         messageID: info.messageID,
                         threadID: each,
-                        devID: developerID // إضافة معرف المطور هنا
+                        devIDs: developerIDs // إضافة معرفي المطورين هنا
                     });
                 }
 
@@ -128,4 +135,4 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     api.sendMessage(`تم الإرسال إلى ${can} مجموعة, لم يتم إرساله إلى ${canNot} مجموعة`, threadID);
 };
-        
+                                                                                                         
