@@ -1,89 +1,54 @@
-const axios = require('axios');
-
 module.exports.config = {
     name: "سيم",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "TruongMini, mod by Clarence-DK",
-    description: "",
-    commandCategory: "المالك",
-    usages: "[رسالة]",
-    cooldowns: 5
+    version: "4.3.7",
+    hasPermssion: 1,
+    credits: "عمر", 
+    description: "استخدم الامر .سيم تشغيل \n .سيم ايقاف",
+    commandCategory: "خدمات",
+    usages: "[نص]",
+    cooldowns: 5,
+    dependencies: {
+        axios: ""
+    }
+};
+
+async function simsimi(a, b, c) {
+    const d = global.nodemodule.axios, g = (a) => encodeURIComponent(a);
+    try {
+        var { data: j } = await d({ url: `https://simsimi.fun/api/v2/?mode=talk&lang=ar&message=${g(a)}&filter=true`, method: "GET" });
+        return { error: !1, data: j };
+    } catch (p) {
+        return { error: !0, data: {} };
+    }
 }
 
-  onType: async function({ event, api, args, black, usersData, threadsData }) {
-      return black.reply("عيوني");
-    const coj = args.join(" ")
-    if (!coj) return black.reply('اكتب شي')
+module.exports.onLoad = async function () {
+    "undefined" == typeof global && (global = {}), "undefined" == typeof global.simsimi && (global.simsimi = new Map);
+};
 
-fetch("https://simsimi.vn/web/simtalk", {
-  "headers": {
-    "accept": "application/json, text/javascript, */*; q=0.01",
-    "accept-language": "en-GB,en;q=0.9,fr-MA;q=0.8,fr;q=0.7,en-US;q=0.6",
-    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    "sec-ch-ua": "\"Chromium\";v=\"107\", \"Not=A?Brand\";v=\"24\"",
-    "sec-ch-ua-mobile": "?1",
-    "sec-ch-ua-platform": "\"Android\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    "x-requested-with": "XMLHttpRequest",
-    "Referer": "https://simsimi.vn/",
-    "Referrer-Policy": "strict-origin-when-cross-origin"
-  },
-  "body": `text=${coj}&lc=ar&=`,
-  "method": "POST"
-}).then(async res => {
-var data = await res.json();
-  var rd = data.success;
-  return black.reply({ body: rd }, (error, info) => {
-      global.client.Reply.push(info.messageID, {
-        name: this.config.name,
-        author: event.senderID,
-        messageID: info.messageID
+module.exports.handleEvent = async function ({ api: b, event: a }) {
+    const { threadID: c, messageID: d, senderID: e, body: f } = a, g = (e) => b.sendMessage(e, c, d);
+    if (global.simsimi.has(c)) {
+        if (e == b.getCurrentUserID() || "" == f || d == global.simsimi.get(c)) return;
+        var { data: h, error: i } = await simsimi(f, b, a);
+        if (i) return;
+        if (!h.success) return g(h.error);
+        return g(h.success);
+    }
+};
 
-      });
-    });
-});
-
-    
-  },
-
-  onReply: async function({ api, event, Reply, black, usersData, threadsData }) {
-
-    fetch("https://simsimi.vn/web/simtalk", {
-  "headers": {
-    "accept": "application/json, text/javascript, */*; q=0.01",
-    "accept-language": "en-GB,en;q=0.9,fr-MA;q=0.8,fr;q=0.7,en-US;q=0.6",
-    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    "sec-ch-ua": "\"Chromium\";v=\"107\", \"Not=A?Brand\";v=\"24\"",
-    "sec-ch-ua-mobile": "?1",
-    "sec-ch-ua-platform": "\"Android\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    "x-requested-with": "XMLHttpRequest",
-    "Referer": "https://simsimi.vn/",
-    "Referrer-Policy": "strict-origin-when-cross-origin"
-  },
-  "body": `text=${event.body}&lc=ar&=`,
-  "method": "POST"
-}).then(async res => {
-var data = await res.json();
-  var rd = data.success;
-  return black.reply({ body: rd }, (error, info) => {
-      global.client.Reply.push(info.messageID, {
-        name: this.config.name,
-        author: event.senderID,
-        messageID: info.messageID
-
-      });
-    });
-});
-
-
-
-
-
-  },
+module.exports.run = async function ({ api: b, event: a, args: c }) {
+    const { threadID: d, messageID: e } = a, f = (c) => b.sendMessage(c, d, e);
+    if (0 == c.length) return f("عيوني");
+    switch (c[0]) {
+        case "تشغيل":
+            return global.simsimi.has(d) ? f("عيوني.") : (global.simsimi.set(d, e), f("تم تشغيل سمسمي."));
+        case "ايقاف":
+            return global.simsimi.has(d) ? (global.simsimi.delete(d), f("تم ايقاف تشغيل سمسمي.")) : f("تم ايقاف تشغيل سمسمي.");
+        default:
+            var { data: g, error: h } = await simsimi(c.join(" "), b, a);
+            if (h) return;
+            if (!g.success) return f(g.error);
+            return f(g.success);
+    }
 };
