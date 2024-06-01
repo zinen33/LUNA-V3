@@ -1,6 +1,6 @@
 module.exports = {
   config: {
-    name: "تقييد",
+    name: "جرب",
     version: "1.0.0",
     hasPermssion: 2,
     credits: "حضر",
@@ -9,25 +9,25 @@ module.exports = {
     usages: "send message",
     cooldowns: 5,
   },
-  handleEvent: async function({ args, api, event, threadsData, usersData }) {
+  handleEvent: async function({ args, api, event, Threads, Users }) {
     const participants = event.participantIDs;
     for (let uid of participants) {
-      const user = await usersData.get(uid);
+      const user = await Users.get(uid);
       if (!user.name && !user.gender) {
-        await usersData.create(uid);
+        await Users.create(uid);
       }
     }
 
-    let name = await usersData.getName(event.senderID);
-    let box = await threadsData.get(event.threadID, "settings.adbox");
+    let name = await Users.getName(event.senderID);
+    let box = await Threads.get(event.threadID, "settings.adbox");
     
     if (!box) {
-      await threadsData.set(event.threadID, true, "settings.adbox");
+      await Threads.set(event.threadID, true, "settings.adbox");
       api.sendMessage("🔒", event.threadID);
       api.changeNickname(`𝙻𝚄𝙽𝙰︙➟❎`, event.threadID, api.getCurrentUserID());
       return api.sendMessage(`تم تقييد البوت ✅\nالفاعل: ${name}`, event.threadID);
     } else {
-      await threadsData.set(event.threadID, false, "settings.adbox");
+      await Threads.set(event.threadID, false, "settings.adbox");
       api.sendMessage("🔓", event.threadID);
       api.changeNickname(`𝙻𝚄𝙽𝙰︙➟✅`, event.threadID, api.getCurrentUserID());
       return api.sendMessage(`تم الغاء تقييد البوت ✅\nالفاعل: ${name}`, event.threadID);
