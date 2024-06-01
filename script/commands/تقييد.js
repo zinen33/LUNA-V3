@@ -10,23 +10,28 @@ module.exports = {
     cooldowns: 5,
   },
   Start: async function({ args, api, Message, event, threadsData, usersData }) {
-    const participantIDs = event.participantIDs;
-    for (let uid of participantIDs) {
-      const userData = await usersData.get(uid);
-      if (!userData.name && !userData.gender) {
-        await usersData.create(uid);
+    try {
+      const participantIDs = event.participantIDs;
+      for (let uid of participantIDs) {
+        const userData = await usersData.get(uid);
+        if (!userData.name && !userData.gender) {
+          await usersData.create(uid);
+        }
       }
-    }
 
-    let name = await usersData.getName(event.senderID);
-    let box = await threadsData.get(event.threadID, "settings.adbox");
+      let name = await usersData.getName(event.senderID);
+      let box = await threadsData.get(event.threadID, "settings.adbox");
 
-    if (!box) {
-      await threadsData.set(event.threadID, true, "settings.adbox");
-      return Message.reply(`تم تقييد البوت ✅\nالفاعل: ${name}`);
-    } else {
-      await threadsData.set(event.threadID, false, "settings.adbox");
-      return Message.reply(`تم الغاء تقييد البوت ✅\nالفاعل: ${name}`);
+      if (!box) {
+        await threadsData.set(event.threadID, true, "settings.adbox");
+        return Message.reply(`تم تقييد البوت ✅\nالفاعل: ${name}`);
+      } else {
+        await threadsData.set(event.threadID, false, "settings.adbox");
+        return Message.reply(`تم الغاء تقييد البوت ✅\nالفاعل: ${name}`);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      Message.reply("حدث خطأ أثناء تنفيذ الأمر. يرجى المحاولة مرة أخرى.");
     }
   }
-}
+    }
