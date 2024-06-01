@@ -72,6 +72,6 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
         api.removeUserFromGroup(parseInt(id), threadID);
     }
 
-    api.sendMessage({ body: `تم طرد ${arrayname.join(", ")} بسبب: ${reason}`, mentions: arraytag }, threadID, messageID);
+    api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, messageID);
 };
          
