@@ -1,4 +1,3 @@
-module.exports.config = {
  module.exports.config = {
     name: "دخول",
     version: "1.0.0",
