@@ -4,7 +4,7 @@ module.exports.config = {
     name: "لونا",
     version: "1.0.0",
     hasPermission: 0,
-    credits: "ZINO X MOHAMED",
+    credits: "ZINO",
     description: "Gpt architecture",
     usePrefix: false,
     commandCategory: "خدمات",
