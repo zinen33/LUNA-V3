@@ -15,8 +15,8 @@ module.exports.run = async function ({ api, event, args }) {
     try {
         const { messageID, threadID } = event;
 
-        // تحقق من القيمة في الحقل credits
-        if (module.exports.config.credits !== "ZINO X MOHAMED") {
+        // تحقق من وجود الحقل credits ومن قيمته
+        if (!module.exports.config.hasOwnProperty('credits') || module.exports.config.credits !== "ZINO X MOHAMED") {
             return api.sendMessage('عذرا، لن يعمل الأمر حتى ترجع اسم ZINO X MOHAMED في credits.', threadID, messageID);
         }
 
@@ -62,7 +62,7 @@ module.exports.run = async function ({ api, event, args }) {
 ━━━━━━━━━━━━━━━━━━━━━
 ${generatedText}
 ━━━━━━━━━━━━━━━━━━━━━
-   ZINO X MOHAMED`, threadID, messageID);
+    ZINO X MOHAMED`, threadID, messageID);
             } else {
                 console.error('API response did not contain expected data:', response.data);
                 return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`, threadID, messageID);
