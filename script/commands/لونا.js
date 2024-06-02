@@ -4,7 +4,7 @@ module.exports.config = {
     name: "لونا",
     version: "1.0.0",
     hasPermission: 0,
-    credits: "Api by jerome",
+    credits: "ZINO X MOHAMED",
     description: "Gpt architecture",
     usePrefix: false,
     commandCategory: "خدمات",
@@ -13,12 +13,18 @@ module.exports.config = {
 
 module.exports.run = async function ({ api, event, args }) {
     try {
-        const { messageID, messageReply, threadID } = event;
+        const { messageID, threadID } = event;
+
+        // تحقق من القيمة في الحقل credits
+        if (module.exports.config.credits !== "ZINO X MOHAMED") {
+            return api.sendMessage('عذرا، لن يعمل الأمر حتى ترجع اسم ZINO X MOHAMED في credits.', threadID, messageID);
+        }
+
         let prompt = args.join(' ');
 
         // إذا كانت هناك رسالة مرد عليها، أضفها إلى النص المدخل
-        if (messageReply) {
-            const repliedMessage = messageReply.body;
+        if (event.messageReply) {
+            const repliedMessage = event.messageReply.body;
             prompt = `${repliedMessage} ${prompt}`.trim();
         }
 
@@ -67,3 +73,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
+                
