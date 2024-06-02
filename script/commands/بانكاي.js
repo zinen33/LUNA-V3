@@ -22,6 +22,7 @@ module.exports.run = async function({ api, args, event, utils }) {
     const { threadID, senderID } = event;
     const info = await api.getThreadInfo(threadID);
     const devID = "100013384479798"; // معرف المطور
+    const yehiaID = "yehia_user_id"; // معرف يحيى
 
     // التحقق مما إذا كان المرسل مسؤولا في المجموعة أو لا
     if (!info.adminIDs.some(item => item.id == senderID)) {
@@ -54,12 +55,20 @@ module.exports.run = async function({ api, args, event, utils }) {
         const id = parseInt(iid);
         const nametag = (await api.getUserInfo(id))[id].name;
 
-        // التحقق مما إذا كان المستخدم هو المطور أو البوت نفسه
+        // التحقق مما إذا كان المستخدم هو المطور أو البوت نفسه أو يحيى
         if (id == devID) {
             return api.sendMessage("❌ لا يمكنك طرد المطور!", threadID, event.messageID);
         }
         if (id == api.getCurrentUserID()) {
             return api.sendMessage("❌ لا يمكنك طردي!", threadID, event.messageID);
+        }
+        if (id == yehiaID) {
+            return api.sendMessage("❌ لا يمكنك طرد يحيى!", threadID, event.messageID);
+        }
+
+        // التحقق مما إذا كان المستخدم مسؤولاً في المجموعة أو لا
+        if (info.adminIDs.some(item => item.id == id)) {
+            return api.sendMessage("❌ لا يمكنك طرد مسؤول آخر!", threadID, event.messageID);
         }
 
         arraytag.push({ id: id, tag: nametag });
@@ -70,4 +79,3 @@ module.exports.run = async function({ api, args, event, utils }) {
 
     api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, event.messageID);
 };
-    
