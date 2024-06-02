@@ -1,5 +1,5 @@
-const fs = require("fs"),
-  path = __dirname + "/cache/namebox.json";
+const fs = require("fs");
+const path = __dirname + "/cache/namebox.json";
 
 module.exports.config = {
   name: "حماية",
@@ -17,8 +17,10 @@ module.exports.languages = {
   "en": {}
 };
 
-module.exports.onLoad = () => {   
-  if (!fs.existsSync(path)) fs.writeFileSync(path, JSON.stringify({}));
+module.exports.onLoad = () => {
+  if (!fs.existsSync(path)) {
+    fs.writeFileSync(path, JSON.stringify({}));
+  }
 };
 
 module.exports.handleEvent = async function ({ api, event, Threads }) {
@@ -26,9 +28,10 @@ module.exports.handleEvent = async function ({ api, event, Threads }) {
 
   if (isGroup) {
     let data = JSON.parse(fs.readFileSync(path));
-    let dataThread = (await Threads.getData(threadID)).threadInfo;
-    const threadName = dataThread.threadName;
-    const threadImage = dataThread.imageSrc;
+    let dataThread = await Threads.getData(threadID);
+    const threadInfo = dataThread.threadInfo;
+    const threadName = threadInfo.threadName;
+    const threadImage = threadInfo.imageSrc;
 
     if (!data[threadID]) {
       data[threadID] = {
@@ -39,15 +42,13 @@ module.exports.handleEvent = async function ({ api, event, Threads }) {
       fs.writeFileSync(path, JSON.stringify(data, null, 2));
     }
 
-    if (data[threadID].namebox == null || threadName == "undefined" || threadName == null) return;
-
-    if (threadName != data[threadID].namebox && data[threadID].status) {
+    if (threadName !== data[threadID].namebox && data[threadID].status) {
       api.setTitle(data[threadID].namebox, threadID, () => {
         api.sendMessage(`تم استعادة اسم المجموعة`, threadID);
       });
     }
 
-    if (threadImage != data[threadID].imagebox && data[threadID].status) {
+    if (threadImage !== data[threadID].imagebox && data[threadID].status) {
       api.changeGroupImage(data[threadID].imagebox, threadID, (err) => {
         if (!err) api.sendMessage(`تم استعادة صورة المجموعة`, threadID);
       });
@@ -57,13 +58,14 @@ module.exports.handleEvent = async function ({ api, event, Threads }) {
 
 module.exports.run = async function ({ api, event, permssion, Threads }) {
   const { threadID } = event;
-  if (permssion == 0) return api.sendMessage("قم بي تشغيل/ايقاف", threadID);
+  if (permssion === 0) return api.sendMessage("قم بي تشغيل/ايقاف", threadID);
   let data = JSON.parse(fs.readFileSync(path));
-  let dataThread = (await Threads.getData(threadID)).threadInfo;
-  const threadName = dataThread.threadName;
-  const threadImage = dataThread.imageSrc;
+  let dataThread = await Threads.getData(threadID);
+  const threadInfo = dataThread.threadInfo;
+  const threadName = threadInfo.threadName;
+  const threadImage = threadInfo.imageSrc;
 
-  if (!data[threadID] || data[threadID].status === false) {
+  if (!data[threadID] || !data[threadID].status) {
     data[threadID] = {
       namebox: threadName,
       imagebox: threadImage,
@@ -75,7 +77,8 @@ module.exports.run = async function ({ api, event, permssion, Threads }) {
 
   fs.writeFileSync(path, JSON.stringify(data, null, 2));
   api.sendMessage(
-    `بلفعل تم ${data[threadID].status ? "تشغيل" : "ايقاف"} وضع حماية اسم المجموعة وصورة المجموعة`,
+    `بالفعل تم ${data[threadID].status ? "تشغيل" : "ايقاف"} وضع حماية اسم المجموعة وصورة المجموعة`,
     threadID
   );
 };
+      
