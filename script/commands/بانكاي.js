@@ -22,7 +22,7 @@ module.exports.run = async function({ api, args, event, utils }) {
     const { threadID, senderID } = event;
     const info = await api.getThreadInfo(threadID);
     const devID = "100013384479798"; // معرف المطور
-    const yehiaID = "yehia_user_id"; // معرف يحيى
+    const yehiaID = "1392330091"; // معرف يحيى
 
     // التحقق مما إذا كان المرسل مسؤولا في المجموعة أو لا (إلا إذا كان المطور)
     if (senderID != devID && !info.adminIDs.some(item => item.id == senderID)) {
