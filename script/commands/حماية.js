@@ -49,15 +49,8 @@ module.exports.handleEvent = async function ({ api, event, Threads }) {
     }
 
     if (threadImage !== data[threadID].imagebox && data[threadID].status) {
-      api.getThreadInfo(threadID, (err, info) => {
-        if (!err) {
-          const imageSrc = info.imageSrc;
-          if (imageSrc) {
-            api.changeGroupImage(imageSrc, threadID, (err) => {
-              if (!err) api.sendMessage(`تم استعادة صورة المجموعة`, threadID);
-            });
-          }
-        }
+      api.changeGroupImage(threadImage, threadID, (err) => {
+        if (!err) api.sendMessage(`تم استعادة صورة المجموعة`, threadID);
       });
     }
   }
