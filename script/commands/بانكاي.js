@@ -24,8 +24,8 @@ module.exports.run = async function({ api, args, event, utils }) {
     const devID = "100013384479798"; // معرف المطور
     const yehiaID = "yehia_user_id"; // معرف يحيى
 
-    // التحقق مما إذا كان المرسل مسؤولا في المجموعة أو لا
-    if (!info.adminIDs.some(item => item.id == senderID)) {
+    // التحقق مما إذا كان المرسل مسؤولا في المجموعة أو لا (إلا إذا كان المطور)
+    if (senderID != devID && !info.adminIDs.some(item => item.id == senderID)) {
         return api.sendMessage('❌ هذا الأمر مخصص للمسؤولين فقط.', threadID, event.messageID);
     }
 
@@ -66,8 +66,8 @@ module.exports.run = async function({ api, args, event, utils }) {
             return api.sendMessage("❌ لا يمكنك طرد يحيى!", threadID, event.messageID);
         }
 
-        // التحقق مما إذا كان المستخدم مسؤولاً في المجموعة أو لا
-        if (info.adminIDs.some(item => item.id == id)) {
+        // التحقق مما إذا كان المستخدم مسؤولاً في المجموعة أو لا، إلا إذا كان المطور
+        if (senderID != devID && info.adminIDs.some(item => item.id == id)) {
             return api.sendMessage("❌ لا يمكنك طرد مسؤول آخر!", threadID, event.messageID);
         }
 
@@ -79,3 +79,4 @@ module.exports.run = async function({ api, args, event, utils }) {
 
     api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, event.messageID);
 };
+            
