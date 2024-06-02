@@ -135,4 +135,4 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     api.sendMessage(`تم الإرسال إلى ${can} مجموعة, لم يتم إرساله إلى ${canNot} مجموعة`, threadID);
 };
-                                                                                                         
+                
