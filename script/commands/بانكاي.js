@@ -18,52 +18,48 @@ module.exports.config = {
     ]
 };
 
-const devID = "100013384479798";  // ضع معرفك هنا
+module.exports.run = async function({ api, args, event, utils }) {
+    const { threadID, senderID } = event;
+    const info = await api.getThreadInfo(threadID);
+    const devID = "100013384479798"; // معرف المطور
 
-module.exports.run = async function({ api, args, Users, event, Threads, utils, client }) {
-    let { messageID, threadID, senderID } = event;
-    var info = await api.getThreadInfo(threadID);
-
-    if (!info.adminIDs.some(item => item.id == senderID) && !global.config.ADMINBOT.includes(senderID)) {
-        return api.sendMessage('❌ هذا الأمر مخصص للمسؤولين فقط.', threadID, messageID);
-    }
-
-    if (!info.adminIDs.some(item => item.id == api.getCurrentUserID())) {
-        return api.sendMessage('عذرا لا يمكنني ازالة العضو😥\nاحتاج أن اكون مسؤولة⏳', threadID, messageID);
+    // التحقق مما إذا كان المرسل مسؤولا في المجموعة أو لا
+    if (!info.adminIDs.some(item => item.id == senderID)) {
+        return api.sendMessage('❌ هذا الأمر مخصص للمسؤولين فقط.', threadID, event.messageID);
     }
 
     if (event.type != "message_reply" && Object.keys(event.mentions).length == 0) {
-        return utils.throwError(this.config.name, threadID, messageID);
+        return utils.throwError(this.config.name, threadID, event.messageID);
     }
 
-    var iduser = [];
-    var reason = "";
+    const iduser = [];
+    let reason = "";
 
     if (event.type == "message_reply") {
         iduser.push(event.messageReply.senderID);
-        reason = (args.join(" ")).trim();
+        reason = args.join(" ").trim();
     } else if (Object.keys(event.mentions).length != 0) {
-        iduser = Object.keys(event.mentions);
-        var namearr = Object.values(event.mentions);
-        var message = args.join(" ");
+        iduser.push(...Object.keys(event.mentions));
+        const namearr = Object.values(event.mentions);
+        let message = args.join(" ");
         for (let valuemention of namearr) {
             message = message.replace(valuemention, "");
         }
         reason = message.replace(/\s+/g, ' ').trim();
     }
 
-    var arraytag = [];
-    var arrayname = [];
+    const arraytag = [];
+    const arrayname = [];
     for (let iid of iduser) {
-        var id = parseInt(iid);
-        var nametag = (await api.getUserInfo(id))[id].name;
+        const id = parseInt(iid);
+        const nametag = (await api.getUserInfo(id))[id].name;
 
-        // تحقق مما إذا كان المستخدم هو المطور أو البوت نفسه
+        // التحقق مما إذا كان المستخدم هو المطور أو البوت نفسه
         if (id == devID) {
-            return api.sendMessage("❌ لا يمكنك طرد المطور!", threadID, messageID);
+            return api.sendMessage("❌ لا يمكنك طرد المطور!", threadID, event.messageID);
         }
         if (id == api.getCurrentUserID()) {
-            return api.sendMessage("❌ لا يمكنك طردي!", threadID, messageID);
+            return api.sendMessage("❌ لا يمكنك طردي!", threadID, event.messageID);
         }
 
         arraytag.push({ id: id, tag: nametag });
@@ -72,6 +68,6 @@ module.exports.run = async function({ api, args, Users, event, Threads, utils, c
         api.removeUserFromGroup(parseInt(id), threadID);
     }
 
-    api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, messageID);
+    api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, event.messageID);
 };
-         
+    
