@@ -3,7 +3,7 @@ const fs = require("fs"),
 
 module.exports.config = {
   name: "حماية",
-  version: "1.0.9",  // increment version
+  version: "1.0.9",
   hasPermssion: 1,
   credits: "نوت دفاين",
   description: "ادمن المجموعات",
@@ -21,19 +21,19 @@ module.exports.onLoad = () => {
   if (!fs.existsSync(path)) fs.writeFileSync(path, JSON.stringify({}));
 };
 
-module.exports.handleEvent = async function ({ api, event, Threads, permssion }) {
-  const { threadID, messageID, senderID, isGroup, author } = event;
+module.exports.handleEvent = async function ({ api, event, Threads }) {
+  const { threadID, isGroup } = event;
 
-  if (isGroup == true) {
+  if (isGroup) {
     let data = JSON.parse(fs.readFileSync(path));
     let dataThread = (await Threads.getData(threadID)).threadInfo;
     const threadName = dataThread.threadName;
-    const threadImage = dataThread.imageSrc;  // get thread profile picture URL
-    
+    const threadImage = dataThread.imageSrc;
+
     if (!data[threadID]) {
       data[threadID] = {
         namebox: threadName,
-        imagebox: threadImage,  // save initial profile picture URL
+        imagebox: threadImage,
         status: true
       };
       fs.writeFileSync(path, JSON.stringify(data, null, 2));
@@ -41,20 +41,14 @@ module.exports.handleEvent = async function ({ api, event, Threads, permssion })
 
     if (data[threadID].namebox == null || threadName == "undefined" || threadName == null) return;
 
-    if (threadName != data[threadID].namebox && data[threadID].status == false) {
-      data[threadID].namebox = threadName;
-      data[threadID].imagebox = threadImage;  // update profile picture URL if protection is off
-      fs.writeFileSync(path, JSON.stringify(data, null, 2));
-    }
-
-    if (threadName != data[threadID].namebox && data[threadID].status == true) {
-      return api.setTitle(data[threadID].namebox, threadID, () => {
-        api.sendMessage(``, threadID);
+    if (threadName != data[threadID].namebox && data[threadID].status) {
+      api.setTitle(data[threadID].namebox, threadID, () => {
+        api.sendMessage(`تم استعادة اسم المجموعة`, threadID);
       });
     }
 
-    if (threadImage != data[threadID].imagebox && data[threadID].status == true) {
-      return api.changeGroupImage(data[threadID].imagebox, threadID, (err) => {
+    if (threadImage != data[threadID].imagebox && data[threadID].status) {
+      api.changeGroupImage(data[threadID].imagebox, threadID, (err) => {
         if (!err) api.sendMessage(`تم استعادة صورة المجموعة`, threadID);
       });
     }
@@ -62,28 +56,26 @@ module.exports.handleEvent = async function ({ api, event, Threads, permssion })
 };
 
 module.exports.run = async function ({ api, event, permssion, Threads }) {
-  const { threadID, messageID } = event;
+  const { threadID } = event;
   if (permssion == 0) return api.sendMessage("قم بي تشغيل/ايقاف", threadID);
   let data = JSON.parse(fs.readFileSync(path));
   let dataThread = (await Threads.getData(threadID)).threadInfo;
   const threadName = dataThread.threadName;
-  const threadImage = dataThread.imageSrc;  // get current profile picture URL
+  const threadImage = dataThread.imageSrc;
 
-  if (data[threadID].status == false) {
+  if (!data[threadID] || data[threadID].status === false) {
     data[threadID] = {
       namebox: threadName,
-      imagebox: threadImage,  // save current profile picture URL
+      imagebox: threadImage,
       status: true
     };
   } else {
     data[threadID].status = false;
   }
-  fs.writeFileSync(path, JSON.stringify(data, null, 2));
-  api.sendMessage(`بلفعل تم ${data[threadID].status == true ? `تشغيل` : `ايقاف`} وضع حماية اسم المجموعة وصورة المجموعة`, threadID);
-};
 
-function PREFIX(t) {
-  var dataThread = global.data.threadData.get(t) || {};
-  return dataThread.PREFIX || global.config.PREFIX;
-  }
-    
+  fs.writeFileSync(path, JSON.stringify(data, null, 2));
+  api.sendMessage(
+    `بلفعل تم ${data[threadID].status ? "تشغيل" : "ايقاف"} وضع حماية اسم المجموعة وصورة المجموعة`,
+    threadID
+  );
+};
