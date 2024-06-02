@@ -19,7 +19,7 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
     const userName = global.data.userName.get(event.senderID) || await Users.getNameUser(event.senderID);
 
     if (userAnswer === correctAnswer) {
-        Currencies.increaseMoney(event.senderID, 50);
+        Currencies.increaseMoney(event.senderID,);
         api.sendMessage(`✅ | ${userName} إجابتك صحيحة`, event.threadID);
 
         api.unsendMessage(handleReply.messageID);
