@@ -28,8 +28,8 @@ module.exports.handleEvent = async function ({ api, event, Threads }) {
 
   if (isGroup) {
     let data = JSON.parse(fs.readFileSync(path));
-    let dataThread = await Threads.getData(threadID);
-    const threadInfo = dataThread.threadInfo;
+    let threadInfo = await Threads.getData(threadID);
+    threadInfo = threadInfo.threadInfo;
     const threadName = threadInfo.threadName;
     const threadImage = threadInfo.imageSrc;
 
@@ -49,8 +49,15 @@ module.exports.handleEvent = async function ({ api, event, Threads }) {
     }
 
     if (threadImage !== data[threadID].imagebox && data[threadID].status) {
-      api.changeGroupImage(data[threadID].imagebox, threadID, (err) => {
-        if (!err) api.sendMessage(`تم استعادة صورة المجموعة`, threadID);
+      api.getThreadInfo(threadID, (err, info) => {
+        if (!err) {
+          const imageSrc = info.imageSrc;
+          if (imageSrc) {
+            api.changeGroupImage(imageSrc, threadID, (err) => {
+              if (!err) api.sendMessage(`تم استعادة صورة المجموعة`, threadID);
+            });
+          }
+        }
       });
     }
   }
@@ -60,8 +67,8 @@ module.exports.run = async function ({ api, event, permssion, Threads }) {
   const { threadID } = event;
   if (permssion === 0) return api.sendMessage("قم بي تشغيل/ايقاف", threadID);
   let data = JSON.parse(fs.readFileSync(path));
-  let dataThread = await Threads.getData(threadID);
-  const threadInfo = dataThread.threadInfo;
+  let threadInfo = await Threads.getData(threadID);
+  threadInfo = threadInfo.threadInfo;
   const threadName = threadInfo.threadName;
   const threadImage = threadInfo.imageSrc;
 
@@ -76,9 +83,9 @@ module.exports.run = async function ({ api, event, permssion, Threads }) {
   }
 
   fs.writeFileSync(path, JSON.stringify(data, null, 2));
+
   api.sendMessage(
     `بالفعل تم ${data[threadID].status ? "تشغيل" : "ايقاف"} وضع حماية اسم المجموعة وصورة المجموعة`,
     threadID
   );
 };
-      
