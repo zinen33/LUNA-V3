@@ -53,7 +53,7 @@ get config() {
     
     const mohamed1 = moment.tz("Africa/Algiers").format("YYYY-MM-DD HH:mm:ss");
 
-    return api.sendMessage(`${array.join("\n")}`, event.threadID, event.messageID);
+    return api.sendMessage(`"${array.join("\n")}"`, event.threadID, event.messageID);
   }
 }
 
