@@ -1,14 +1,15 @@
 const axios = require('axios');
 
-module.exports = {
-  config: {
+module.exports.config = {
     name: "تخيل",
-    aliases: ["dalle3"],
-    version: "1.1",
-    author: "OtinXSandip | ArYAN", // Command re-modified by ArYAN
-    countDown: 10,
-    role: 0,
-    shortDescription: {
+    version: "1.0.0",
+    hasPermssion: 0,
+    credits: "عبدالرحمن",
+    description: "لعبة عواصم الدول ",
+    usages: ["لعبة"],
+    commandCategory: "العاب",
+    cooldowns: 0 
+  {
       en: 'Text to Image'
     },
     longDescription: {
