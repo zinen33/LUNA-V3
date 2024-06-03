@@ -9,7 +9,7 @@ module.exports.config = {
     usages: ["لعبة"],
     commandCategory: "العاب",
     cooldowns: 0 
-  {
+    };
       en: 'Text to Image'
     },
     longDescription: {
