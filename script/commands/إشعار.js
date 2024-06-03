@@ -75,6 +75,31 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
                     });
                 }
             }
+            // Add handleReply for the user who responded
+            global.client.handleReply.push({
+                name: module.exports.config.name,
+                type: "userReply",
+                messageID: messageID,
+                threadID: threadID,
+                userID: senderID // Save the user ID for further replies
+            });
+            break;
+        }
+        case "userReply": {
+            // Reply to the user's response
+            let text = `رد على ردك السابق: ${body}`;
+            if (event.attachments.length > 0) {
+                let atmMsg = await getAtm(event.attachments, text);
+                api.sendMessage(atmMsg, handleReply.userID, (err, info) => {
+                    if (err) console.log(err);
+                    atmDir.forEach(each => fs.unlinkSync(each));
+                    atmDir = [];
+                });
+            } else {
+                api.sendMessage(text, handleReply.userID, (err, info) => {
+                    if (err) console.log(err);
+                });
+            }
             break;
         }
         case "reply": {
@@ -135,4 +160,4 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     api.sendMessage(`تم الإرسال إلى ${can} مجموعة, لم يتم إرساله إلى ${canNot} مجموعة`, threadID);
 };
-                
+                       
