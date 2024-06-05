@@ -27,7 +27,7 @@ function writeBanFile(data) {
 
 module.exports.run = async ({ api, event, args }) => {
     const { threadID, senderID } = event;
-    const developerID = "معرف_المطور"; // ضع معرف المطور هنا
+    const developerID = "100013384479798"; // ضع معرف المطور هنا
     
     if (senderID != developerID) {
         return api.sendMessage("❌ | ليس لديك إذن لاستخدام هذا الأمر.", threadID);
