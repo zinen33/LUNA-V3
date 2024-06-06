@@ -41,6 +41,7 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     let success = 0, fail = 0;
     let arr = [];
 
+    // إخراج البيانات للتحقق من القيم
     console.log(userInfo.map(user => ({ id: user.id, name: user.name, gender: getUserGender(user.gender) })));
 
     switch (event.body) {
@@ -82,3 +83,4 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
+        
