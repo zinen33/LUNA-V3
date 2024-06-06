@@ -3,8 +3,8 @@ module.exports.config = {
     version: "1.0.0",
     hasPermssion: 1,
     credits: "ProCoderMew",
-    description: "🇦🇱 اخراج لحسابة لمعطلة من لقروب 🇦🇱",
-    commandCategory: "〘 ادمن قروبﮱ 〙",
+    description: "🇦🇱 اخراج الحسابات المعطلة من القروب 🇦🇱",
+    commandCategory: "〘 ادمن قروب ﮱ 〙",
     usages: "فقط",
     cooldowns: 5
 };
@@ -30,10 +30,10 @@ module.exports.run = async function({ api, event }) {
 
 module.exports.handleReply = async function({ api, event, handleReply }) {
     if (event.senderID !== handleReply.author) return;
-    
-    var { userInfo, adminIDs } = await api.getThreadInfo(event.threadID);
-    var success = 0, fail = 0;
-    var arr = [];
+
+    const { userInfo, adminIDs } = await api.getThreadInfo(event.threadID);
+    let success = 0, fail = 0;
+    let arr = [];
 
     switch (event.body) {
         case "1":
@@ -52,8 +52,8 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     if (arr.length === 0) {
         return api.sendMessage("- لا توجد حسابات للتصفية بالمعايير المختارة.", event.threadID);
     } else {
-        adminIDs = adminIDs.map(e => e.id).some(e => e == global.data.botID);
-        if (!adminIDs) {
+        const isBotAdmin = adminIDs.map(e => e.id).includes(api.getCurrentUserID());
+        if (!isBotAdmin) {
             return api.sendMessage("- صعدني أدمن حتى أقدر أصفيهم.", event.threadID);
         } else {
             api.sendMessage("- جار التصفية ..", event.threadID, async function() {
@@ -74,3 +74,4 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
+                        
