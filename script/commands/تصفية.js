@@ -43,10 +43,10 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
             arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
             break;
         case "2":
-            arr = userInfo.filter(e => e.gender === 2).map(e => e.id);
+            arr = userInfo.filter(e => e.gender === `${nu}`).map(e => e.id);
             break;
         case "3":
-            arr = userInfo.filter(e => e.gender === 1).map(e => e.id);
+            arr = userInfo.filter(e => e.gender === `${nam}`).map(e => e.id);
             break;
         default:
             return api.sendMessage("اختيار غير صحيح. الرجاء الرد برقم صحيح.", event.threadID);
@@ -77,3 +77,4 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
+        
