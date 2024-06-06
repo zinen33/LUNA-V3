@@ -9,6 +9,12 @@ module.exports.config = {
     cooldowns: 5
 };
 
+function getUserGender(genderCode) {
+    if (genderCode === 3) return 'ولد';
+    if (genderCode === 2) return 'فتاة';
+    return 'غير معروف';
+}
+
 module.exports.run = async function({ api, event }) {
     const filterMessage = 
         "________________________________\n" +
@@ -35,18 +41,17 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     let success = 0, fail = 0;
     let arr = [];
 
-    // إخراج البيانات للتحقق من القيم
-    console.log(userInfo.map(user => ({ id: user.id, name: user.name, gender: user.gender })));
+    console.log(userInfo.map(user => ({ id: user.id, name: user.name, gender: getUserGender(user.gender) })));
 
     switch (event.body) {
         case "1":
             arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
             break;
         case "2":
-            arr = userInfo.filter(e => e.gender === `${nu}`).map(e => e.id);
+            arr = userInfo.filter(e => getUserGender(e.gender) === 'فتاة').map(e => e.id);
             break;
         case "3":
-            arr = userInfo.filter(e => e.gender === `${nam}`).map(e => e.id);
+            arr = userInfo.filter(e => getUserGender(e.gender) === 'ولد').map(e => e.id);
             break;
         default:
             return api.sendMessage("اختيار غير صحيح. الرجاء الرد برقم صحيح.", event.threadID);
@@ -77,4 +82,3 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
-        
