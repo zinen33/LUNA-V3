@@ -35,6 +35,9 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     let success = 0, fail = 0;
     let arr = [];
 
+    // إخراج البيانات للتحقق من القيم
+    console.log(userInfo.map(user => ({ id: user.id, name: user.name, gender: user.gender })));
+
     switch (event.body) {
         case "1":
             arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
@@ -74,4 +77,3 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
-                        
