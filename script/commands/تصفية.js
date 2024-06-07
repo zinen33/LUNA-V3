@@ -10,8 +10,8 @@ module.exports.config = {
 };
 
 function getUserGender(genderCode) {
-    if (genderCode === 2) return 'فتاة';
-    if (genderCode === 1) return 'ولد';
+    if (genderCode === 2) return 'ولد';
+    if (genderCode === 1) return 'فتاة';
     return 'غير معروف';
 }
 
@@ -81,4 +81,4 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
-                                  
+                
