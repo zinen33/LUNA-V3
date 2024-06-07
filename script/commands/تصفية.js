@@ -42,6 +42,8 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     let success = 0, fail = 0;
     let arr = [];
 
+    console.log("userInfo: ", userInfo); // لعرض معلومات المستخدمين
+    
     switch (event.body) {
         case "1":
             arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
@@ -56,6 +58,8 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
             return api.sendMessage("اختيار غير صحيح. الرجاء الرد برقم صحيح.", event.threadID);
     }
 
+    console.log("Filtered IDs: ", arr); // لعرض الحسابات التي تم تصفيتها
+    
     if (arr.length === 0) {
         return api.sendMessage("- لا توجد حسابات للتصفية بالمعايير المختارة.", event.threadID);
     } else {
@@ -81,4 +85,4 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
-                
+        
