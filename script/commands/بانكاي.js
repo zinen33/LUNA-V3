@@ -87,4 +87,4 @@ module.exports.run = async function({ api, args, event, utils }) {
 
     api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, event.messageID);
 };
-                                   
+                
