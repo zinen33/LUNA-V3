@@ -63,7 +63,7 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
                 let atmMsg = await getAtm(event.attachments, text);
                 for (let devID of handleReply.devIDs) {
                     api.sendMessage(atmMsg, devID, (err, info) => {
-                        if (err) console.log(err);
+                        if (err) console.log(`Error sending message to devID ${devID}:`, err);
                     });
                 }
                 atmDir.forEach(each => fs.unlinkSync(each));
@@ -71,11 +71,10 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
             } else {
                 for (let devID of handleReply.devIDs) {
                     api.sendMessage(text, devID, (err, info) => {
-                        if (err) console.log(err);
+                        if (err) console.log(`Error sending message to devID ${devID}:`, err);
                     });
                 }
             }
-            // Add handleReply for the user who responded
             global.client.handleReply.push({
                 name: module.exports.config.name,
                 type: "userReply",
@@ -86,18 +85,19 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
             break;
         }
         case "userReply": {
-            // Reply to the user's response
             let text = `رد على ردك السابق: ${body}`;
             if (event.attachments.length > 0) {
                 let atmMsg = await getAtm(event.attachments, text);
                 api.sendMessage(atmMsg, handleReply.userID, (err, info) => {
-                    if (err) console.log(err);
+                    if (err) {
+                        console.log(`Error sending reply to userID ${handleReply.userID}:`, err);
+                    }
                     atmDir.forEach(each => fs.unlinkSync(each));
                     atmDir = [];
                 });
             } else {
                 api.sendMessage(text, handleReply.userID, (err, info) => {
-                    if (err) console.log(err);
+                    if (err) console.log(`Error sending reply to userID ${handleReply.userID}:`, err);
                 });
             }
             break;
@@ -107,11 +107,14 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users, T
             if (event.attachments.length > 0) {
                 let atmMsg = await getAtm(event.attachments, text);
                 api.sendMessage(atmMsg, handleReply.threadID, (err, info) => {
+                    if (err) console.log(`Error sending message to threadID ${handleReply.threadID}:`, err);
                     atmDir.forEach(each => fs.unlinkSync(each));
                     atmDir = [];
                 });
             } else {
-                api.sendMessage(text, handleReply.threadID, (err, info) => {});
+                api.sendMessage(text, handleReply.threadID, (err, info) => {
+                    if (err) console.log(`Error sending message to threadID ${handleReply.threadID}:`, err);
+                });
             }
             break;
         }
@@ -139,6 +142,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
             api.sendMessage(text, each, (err, info) => {
                 sentCount++;
                 if (err) {
+                    console.log(`Error sending message to threadID ${each}:`, err);
                     canNot++;
                 } else {
                     can++;
@@ -160,4 +164,119 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     api.sendMessage(`تم الإرسال إلى ${can} مجموعة, لم يتم إرساله إلى ${canNot} مجموعة`, threadID);
 };
-                       
+
+module.exports.handleReply = async function ({ api, event, handleReply, Users, Threads }) {
+    const moment = require("moment-timezone");
+    var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:ss");
+    const { threadID, messageID, senderID, body } = event;
+    let name = await Users.getNameUser(senderID);
+
+    switch (handleReply.type) {
+        case "sendnoti": {
+            let text = `== رد المستخدم ==\n\n『الرد』 : ${body}\n\n\nإسم المستخدم: ${name} من المجموعة: ${(await Threads.getInfo(threadID)).threadName || "unknown"}`;
+            if (event.attachments.length > 0) {
+                let atmMsg = await getAtm(event.attachments, text);
+                for (let devID of handleReply.devIDs) {
+                    api.sendMessage(atmMsg, devID, (err, info) => {
+                        if (err) console.log(`Error sending message to devID ${devID}:`, err);
+                    });
+                }
+                atmDir.forEach(each => fs.unlinkSync(each));
+                atmDir = [];
+            } else {
+                for (let devID of handleReply.devIDs) {
+                    api.sendMessage(text, devID, (err, info) => {
+                        if (err) console.log(`Error sending message to devID ${devID}:`, err);
+                    });
+                }
+            }
+            global.client.handleReply.push({
+                name: module.exports.config.name,
+                type: "userReply",
+                messageID: messageID,
+                threadID: threadID,
+                userID: senderID // Save the user ID for further replies
+            });
+            break;
+        }
+        case "userReply": {
+            let text = `رد على ردك السابق: ${body}`;
+            if (event.attachments.length > 0) {
+                let atmMsg = await getAtm(event.attachments, text);
+                api.sendMessage(atmMsg, handleReply.userID, (err, info) => {
+                    if (err) {
+                        console.log(`Error sending reply to userID ${handleReply.userID}:`, err);
+                    }
+                    atmDir.forEach(each => fs.unlinkSync(each));
+                    atmDir = [];
+                });
+            } else {
+                api.sendMessage(text, handleReply.userID, (err, info) => {
+                    if (err) console.log(`Error sending reply to userID ${handleReply.userID}:`, err);
+                });
+            }
+            break;
+        }
+        case "reply": {
+            let text = `إشعار من مطور ∬꫶ꪲ🥷\n\t『الرسالة 📨』 :\n╔═.✵.════════════╗\n ${body}\n╚════════════.✵.═╝\n\n\n『إسم المطور』 ${name}\n\nقم بالرد على هذه الرسالة إذا كنت تريد متابعة إرسال الرسائل إلى المطور`;
+            if (event.attachments.length > 0) {
+                let atmMsg = await getAtm(event.attachments, text);
+                api.sendMessage(atmMsg, handleReply.threadID, (err, info) => {
+                    if (err) console.log(`Error sending message to threadID ${handleReply.threadID}:`, err);
+                    atmDir.forEach(each => fs.unlinkSync(each));
+                    atmDir = [];
+                });
+            } else {
+                api.sendMessage(text, handleReply.threadID, (err, info) => {
+                    if (err) console.log(`Error sending message to threadID ${handleReply.threadID}:`, err);
+                });
+            }
+            break;
+        }
+    }
+};
+
+module.exports.run = async function ({ api, event, args, Users }) {
+    const moment = require("moment-timezone");
+    var gio = moment.tz("Africa/Casablanca").format("DD/MM/YYYY - HH:mm:ss");
+    const { threadID, messageID, senderID, messageReply } = event;
+    const developerIDs = ['100013384479798', '100044725279836']; // ضع معرفي المطورين هنا
+
+    if (!args[0]) return api.sendMessage("أرجوك قم بإدخال رسالة", threadID);
+
+    let allThread = global.data.allThreadID || [];
+    let can = 0, canNot = 0;
+    let text = `إشعار من مطور ∬꫶ꪲ🥷 \n\nالرسالة 📨: ${args.join(" ")}\n\nإسم المطور: ${await Users.getNameUser(senderID)}`;
+    if (event.type == "message_reply") {
+        text = await getAtm(messageReply.attachments, text);
+    }
+
+    await new Promise(resolve => {
+        let sentCount = 0;
+        allThread.forEach((each) => {
+            api.sendMessage(text, each, (err, info) => {
+                sentCount++;
+                if (err) {
+                    console.log(`Error sending message to threadID ${each}:`, err);
+                    canNot++;
+                } else {
+                    can++;
+                    global.client.handleReply.push({
+                        name: module.exports.config.name,
+                        type: "sendnoti",
+                        messageID: info.messageID,
+                        threadID: each,
+                        devIDs: developerIDs // إضافة معرفي المطورين هنا
+                    });
+                }
+
+                if (sentCount === allThread.length) {
+                    resolve();
+                }
+            });
+        });
+    });
+
+    api.sendMessage(`تم الإرسال إلى ${can} مجموعة, لم يتم إرساله إلى ${canNot} مجموعة`, threadID);
+};
+                                    
