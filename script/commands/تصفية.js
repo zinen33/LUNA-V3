@@ -42,24 +42,20 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     let success = 0, fail = 0;
     let arr = [];
 
-    console.log("userInfo: ", userInfo); // لعرض معلومات المستخدمين
-    
     switch (event.body) {
         case "1":
             arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
             break;
         case "2":
-            arr = userInfo.filter(e => getUserGender(e.gender) === 'فتاة').map(e => e.id);
+            arr = userInfo.filter(e => e.gender === 1).map(e => e.id); // 1 للفتيات
             break;
         case "3":
-            arr = userInfo.filter(e => getUserGender(e.gender) === 'ولد').map(e => e.id);
+            arr = userInfo.filter(e => e.gender === 2).map(e => e.id); // 2 للأولاد
             break;
         default:
             return api.sendMessage("اختيار غير صحيح. الرجاء الرد برقم صحيح.", event.threadID);
     }
 
-    console.log("Filtered IDs: ", arr); // لعرض الحسابات التي تم تصفيتها
-    
     if (arr.length === 0) {
         return api.sendMessage("- لا توجد حسابات للتصفية بالمعايير المختارة.", event.threadID);
     } else {
@@ -85,4 +81,4 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
-        
+                    
