@@ -38,13 +38,17 @@ module.exports.run = async function({ api, event }) {
 module.exports.handleReply = async function({ api, event, handleReply }) {
     if (event.senderID !== handleReply.author) return;
 
-    const { userInfo, adminIDs } = await api.getThreadInfo(event.threadID);
+    const threadInfo = await api.getThreadInfo(event.threadID);
+    const userInfo = threadInfo.userInfo;
+    const adminIDs = threadInfo.adminIDs;
+
     let success = 0, fail = 0;
     let arr = [];
 
+    // اختيار تصفية حسب الجنس
     switch (event.body) {
         case "1":
-            arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
+            arr = userInfo.filter(e => e.gender === undefined || e.gender === null).map(e => e.id);
             break;
         case "2":
             arr = userInfo.filter(e => e.gender === 1).map(e => e.id); // 1 للفتيات
@@ -57,28 +61,29 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     }
 
     if (arr.length === 0) {
-        return api.sendMessage("- لا توجد حسابات للتصفية بالمعايير المختارة.", event.threadID);
+        return api.sendMessage("لا توجد حسابات للتصفية بالمعايير المختارة.", event.threadID);
     } else {
-        const isBotAdmin = adminIDs.some(e => e.id === api.getCurrentUserID());
-        if (!isBotAdmin) {
-            return api.sendMessage("- صعدني أدمن حتى أقدر أصفيهم.", event.threadID);
+        const botAdmin = adminIDs.some(e => e.id === api.getCurrentUserID());
+        if (!botAdmin) {
+            return api.sendMessage("صعدني أدمن حتى أقدر أصفيهم.", event.threadID);
         } else {
-            api.sendMessage("- جار التصفية ..", event.threadID, async function() {
+            api.sendMessage("جار التصفية ...", event.threadID, async function() {
                 for (const e of arr) {
                     try {
-                        await new Promise(resolve => setTimeout(resolve, 1000));  
+                        await new Promise(resolve => setTimeout(resolve, 1000));
                         await api.removeUserFromGroup(parseInt(e), event.threadID);
                         success++;
-                    } catch {
+                    } catch (err) {
+                        console.error("فشل في طرد المستخدم: ", e, err);
                         fail++;
                     }
                 }
 
-                api.sendMessage("تمت تصفية " + success + " أشخاص بنجاح.", event.threadID, function() {
-                    if (fail !== 0) return api.sendMessage("- حدث خطأ، لم أتمكن من تصفية " + fail + " أشخاص.", event.threadID);
-                });
+                let resultMessage = `تمت تصفية ${success} أشخاص بنجاح.`;
+                if (fail !== 0) resultMessage += `\nحدث خطأ، لم أتمكن من تصفية ${fail} أشخاص.`;
+                api.sendMessage(resultMessage, event.threadID);
             });
         }
     }
 };
-                    
+        
