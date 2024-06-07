@@ -1,8 +1,8 @@
 module.exports.config = {
     name: "تصفية",
     version: "1.0.0",
-    hasPermssion: 1,
-    credits: "ProCoderMew",
+    hasPermissions: 1,
+    credits: "ZINO",
     description: "🇦🇱 اخراج الحسابات المعطلة من القروب 🇦🇱",
     commandCategory: "〘 ادمن قروب ﮱ 〙",
     usages: "فقط",
@@ -25,6 +25,7 @@ module.exports.run = async function({ api, event }) {
         "________________________________";
 
     api.sendMessage(filterMessage, event.threadID, (error, info) => {
+        if (error) return console.error(error);
         global.client.handleReply.push({
             name: this.config.name,
             messageID: info.messageID,
@@ -40,9 +41,6 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
     const { userInfo, adminIDs } = await api.getThreadInfo(event.threadID);
     let success = 0, fail = 0;
     let arr = [];
-
-    // إخراج البيانات للتحقق من القيم
-    console.log(userInfo.map(user => ({ id: user.id, name: user.name, gender: getUserGender(user.gender) })));
 
     switch (event.body) {
         case "1":
@@ -68,7 +66,7 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
             api.sendMessage("- جار التصفية ..", event.threadID, async function() {
                 for (const e of arr) {
                     try {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await new Promise(resolve => setTimeout(resolve, 1000));  
                         await api.removeUserFromGroup(parseInt(e), event.threadID);
                         success++;
                     } catch {
@@ -83,4 +81,3 @@ module.exports.handleReply = async function({ api, event, handleReply }) {
         }
     }
 };
-    
