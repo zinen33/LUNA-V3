@@ -82,14 +82,20 @@ module.exports.run = async function({ api, args, event, utils }) {
 
         arraytag.push({ id: id, tag: nametag });
         arrayname.push(nametag);
-
-        try {
-            await api.removeUserFromGroup(id, threadID);
-        } catch (error) {
-            return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${nametag}: ${error.message}`, threadID, event.messageID);
-        }
     }
 
-    api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, event.messageID);
+    api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, async (error, messageInfo) => {
+        if (error) {
+            return api.sendMessage(`❌ حدث خطأ أثناء محاولة إرسال رسالة الوداع: ${error.message}`, threadID, event.messageID);
+        }
+        for (let iid of iduser) {
+            const id = parseInt(iid);
+            try {
+                await api.removeUserFromGroup(id, threadID);
+            } catch (err) {
+                api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
+            }
+        }
+    });
 };
     
