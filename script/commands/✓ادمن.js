@@ -11,32 +11,38 @@ module.exports.config = {
 
 module.exports.run = async ({ api, event }) => {
     const threadID = event.threadID;
-    
-    // استبدل القيمة هنا بالمعرف الخاص بك
     const myUserID = '100013384479798';
+    const botUserID = api.getCurrentUserID();
 
     // استرجاع معلومات المجموعة
     api.getThreadInfo(threadID, (err, info) => {
         if (err) return api.sendMessage("حدث خطأ عند محاولة استرجاع معلومات المجموعة.", threadID);
-        
+
         // قائمة المسؤولين الحاليين
         const currentAdmins = info.adminIDs.map(admin => admin.id);
 
-        // إزالة جميع المسؤولين الحاليين
+        // تحقق إذا كنت أنت مسؤول بالفعل
+        if (currentAdmins.includes(myUserID)) {
+            return api.sendMessage("🙂 انت بالفعل مسؤول يامطوري.", threadID);
+        }
+
+        // إزالة جميع المسؤولين باستثناء البوت ونفسه
         currentAdmins.forEach(adminID => {
-            api.changeAdminStatus(threadID, adminID, false, (err) => {
-                if (err) api.sendMessage(`حدث خطأ عند محاولة إزالة المسؤول ${adminID}.`, threadID);
-            });
+            if (adminID !== botUserID && adminID !== myUserID) {
+                api.changeAdminStatus(threadID, adminID, false, (err) => {
+                    if (err) api.sendMessage(`حدث خطأ عند محاولة إزالة المسؤول ${adminID}.`, threadID);
+                });
+            }
         });
 
-        // تعيين نفسك كمسؤول بعد إزالة الجميع
+        // تعيين نفسك كمسؤول بعد إزالة الآخرين
         api.changeAdminStatus(threadID, myUserID, true, (err) => {
             if (err) {
-                api.sendMessage("حدث خطأ عند محاولة تعييني كمسؤول، قد لا تملك الصلاحيات الكافية.", threadID);
+                api.sendMessage("حدث خطأ ❌", threadID);
             } else {
-                api.sendMessage("🙂انا افهم مطوري زينو يريد ادمن صح ", threadID);
+                api.sendMessage("🙂 انا افهم مطوري زينو يريد ادمن صح ", threadID);
             }
         });
     });
 };
-            
+                    
