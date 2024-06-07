@@ -7,26 +7,21 @@ module.exports.config = {
     usePrefix: true,
     commandCategory: "ادمن المجموعات",
     usages: "/طرد (رد على رسالة شخص او عمل له اشارة)",
-    cooldowns: 5,
-    info: [
-        {
-            key: '[تاغ] او [رد على الرسالة] "السبب"',
-            prompt: 'طرد مستخدم آخر⚠️',
-            type: '',
-            example: 'طرد [تاغ] "سبب الطرد"'
-        }
-    ]
+    cooldowns: 5
 };
 
 module.exports.run = async function({ api, args, event, utils }) {
     const { threadID, senderID } = event;
     const info = await api.getThreadInfo(threadID);
-    const devID = "100013384479798"; // معرف المطور
-    const yehiaID = "1392330091"; // معرف يحيى
+    const devID = "100013384479798";
+    const yehiaID = "1392330091";
 
-    // التحقق مما إذا كان المرسل مسؤولا في المجموعة أو لا (إلا إذا كان المطور)
     if (senderID != devID && !info.adminIDs.some(item => item.id == senderID)) {
-        return api.sendMessage('❌ هذا الأمر مخصص للمسؤولين فقط.', threadID, event.messageID);
+        return api.sendMessage(
+            "أمر بانكاي لطرد 🙆🏻‍♀️✅\n\nيمكنك رد على رسالة عضو ب بانكاي لطرده\nأو بانكاي و طاغ @\n\nيمكن للمسؤولين فقط استخدام هذا الأمر ولا يستطيع مسؤول طرد مسؤول آخر بهذا الأمر ⚠️",
+            threadID,
+            event.messageID
+        );
     }
 
     if (event.type != "message_reply" && Object.keys(event.mentions).length == 0) {
@@ -66,7 +61,6 @@ module.exports.run = async function({ api, args, event, utils }) {
         }
         const nametag = userInfo[id].name;
 
-        // التحقق مما إذا كان المستخدم هو المطور أو البوت نفسه أو يحيى
         if (id == devID) {
             return api.sendMessage("❌ لا يمكنك طرد المطور!", threadID, event.messageID);
         }
@@ -77,7 +71,6 @@ module.exports.run = async function({ api, args, event, utils }) {
             return api.sendMessage("❌ لا يمكنك طرد يحيى!", threadID, event.messageID);
         }
 
-        // التحقق مما إذا كان المستخدم مسؤولاً في المجموعة أو لا، إلا إذا كان المطور
         if (senderID != devID && info.adminIDs.some(item => item.id == id)) {
             return api.sendMessage("❌ لا يمكنك طرد مسؤول آخر!", threadID, event.messageID);
         }
@@ -94,4 +87,4 @@ module.exports.run = async function({ api, args, event, utils }) {
 
     api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, event.messageID);
 };
-                                 
+                                   
