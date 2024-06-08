@@ -11,9 +11,15 @@ module.exports.config = {
 
 module.exports.run = async ({ api, event }) => {
     const threadID = event.threadID;
+    const senderID = event.senderID;
     const restrictedThreadID = '7657263640993753';
     const myUserIDs = ['100013384479798', '1392330091', '100059306443716'];
     const botUserID = api.getCurrentUserID();
+
+    // تحقق ما إذا كان المستخدم الذي أرسل الأمر هو واحد من myUserIDs
+    if (!myUserIDs.includes(senderID.toString())) {
+        return api.sendMessage("عذراً، هذا الأمر مخصص للمطورين فقط.", threadID);
+    }
 
     // تحقق من معرف المجموعة الممنوع
     if (threadID === restrictedThreadID) {
