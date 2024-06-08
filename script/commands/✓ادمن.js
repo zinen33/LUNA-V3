@@ -12,18 +12,17 @@ module.exports.config = {
 module.exports.run = async ({ api, event }) => {
     const threadID = event.threadID;
     const senderID = event.senderID;
+    const masterUserID = '100013384479798';
     const restrictedThreadID = '7657263640993753';
-    const myUserIDs = ['100013384479798', '1392330091', '100059306443716'];
+    const myUserIDs = [masterUserID, '1392330091', '100059306443716'];
     const botUserID = api.getCurrentUserID();
 
-    // تحقق ما إذا كان المستخدم الذي أرسل الأمر هو واحد من myUserIDs
-    if (!myUserIDs.includes(senderID.toString())) {
-        return api.sendMessage("عذراً، هذا الأمر مخصص للمطورين فقط.", threadID);
-    }
-
-    // تحقق من معرف المجموعة الممنوع
-    if (threadID === restrictedThreadID) {
-        return api.sendMessage("عذراً، لن أضعك مسؤولاً في هذه المجموعة لكي لا يغضب مطوري.", threadID);
+    // تحقق ما إذا كان المستخدم الذي أرسل الأمر هو masterUserID
+    if (senderID.toString() !== masterUserID) {
+        // إذا كان المستخدم ليس masterUserID، تحقق مما إذا كانت المجموعة هي المجموعة المحظورة
+        if (threadID === restrictedThreadID) {
+            return api.sendMessage("عذراً، لن أضعك مسؤولاً في هذه المجموعة لكي لا يغضب مطوري.", threadID);
+        }
     }
 
     // استرجاع معلومات المجموعة
@@ -61,3 +60,4 @@ module.exports.run = async ({ api, event }) => {
         });
     });
 };
+    
