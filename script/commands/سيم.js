@@ -1,7 +1,7 @@
 module.exports.config = {
     name: "سيم",
     version: "4.3.7",
-    hasPermssion: 1,
+    hasPermssion: 2,
     credits: "عمر", 
     description: "استخدم الامر .سيم تشغيل \n .سيم ايقاف",
     commandCategory: "خدمات",
