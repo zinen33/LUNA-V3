@@ -1,47 +1,43 @@
+const path = require("path");
+const fs = require("fs");
+
+let bannedWords = {};
 let warnings = {};
 let badWordsActive = {};
-let removedFromAdmin = {};
 
 module.exports.config = {
-  name: "الكلمات_النامية",
+  name: "حضر",
   version: "1.0.0",
   hasPermission: 1,
   credits: "Jonell Magallanes",
-  description: "ادمن المجموعات",
+  description: "حظر شخص عند قوله كلمة نامية أو محظورة",
   usePrefix: true,
-  commandCategory: "ادمن المجموعات",
+  commandCategory: "المالك",
   usages: "تشغيل | إيقاف",
   cooldowns: 5,
-};
-
-// Function to load banned words from JSON file
-const loadBannedWords = () => {
-  const filePath = path.join(__dirname, "../commands/cache/badwords.json");
-  if (fs.existsSync(filePath)) {
-    const data = fs.readFileSync(filePath, "utf8");
-    const jsonData = JSON.parse(data);
-    return jsonData.bannedWords || [];
-  } else {
-    return [];
-  }
 };
 
 module.exports.handleEvent = async function({ api, event }) {
   const { threadID, messageID, senderID } = event;
 
-  const bannedWords = loadBannedWords();
+  const loadWords = () => {
+    const wordFile = path.join(__dirname, `../commands/cache/bannedWords.json`);
+    if (fs.existsSync(wordFile)) {
+      const words = fs.readFileSync(wordFile, "utf8");
+      bannedWords = JSON.parse(words);
+    } else {
+      bannedWords = [];
+    }
+  };
+
+  loadWords();
 
   if (!badWordsActive[threadID]) return;
 
   const isAdmin = (await api.getThreadInfo(threadID)).adminIDs.some(adminInfo => adminInfo.id === api.getCurrentUserID());
 
-  if (!isAdmin && !removedFromAdmin[threadID]) {
-    api.sendMessage("Bot Needs Admin Privilege", threadID);
-    removedFromAdmin[threadID] = true; // تعيين المتغير بقيمة true بمجرد الإعلان عن إزالة البوت من الإدارة
-    return;
-  }
-
-  if (!isAdmin && removedFromAdmin[threadID]) {
+  if (!isAdmin) {
+    api.sendMessage("Bot Need Admin Privilege", threadID);
     return;
   }
 
@@ -53,11 +49,11 @@ module.exports.handleEvent = async function({ api, event }) {
 
     warnings[senderID]++;
     if (warnings[senderID] === 2) {
-      api.sendMessage("⚠️ | أنت بالفعل تم تحذيرك مرتين، سيتم طردك من المجموعة.", threadID, messageID);
-      api.removeUserFromGroup(senderID, threadID); 
+      api.sendMessage(" ⚠️ |أنت بالفعل تم تحذيرك مرتين خذا يعني أنه سيتم طردك من المجموعة", threadID, messageID);
+      api.removeUserFromGroup(senderID, threadID);
       warnings[senderID] = 1;
     } else {
-      api.sendMessage(`⚠️ | لقد تم تحديد و اكتشاف كلمة محظورة في جملتك "${messageContent}". إذا قمت بمعاودة الكرة سيتم طردك تلقائيا من المجموعة.`, threadID, messageID);
+      api.sendMessage(` ⚠️ |  لقد تم تحديد و إكتشاف كلمة نامي  ومحظورة في جملتك "${messageContent}" إذا قمت بمعاودة الكرة سيتم طردك تلقائيا من المجموعة \n بإذن الله إذا تم رفعي آدمن`, threadID, messageID);
     }
   }
 };
@@ -66,13 +62,13 @@ module.exports.run = async function({ api, event, args }) {
   const { threadID, messageID } = event;
 
   if (!args[0]) {
-    return api.sendMessage("أىجوك قم بإختيار (تشغيل, إيقاف).", threadID);
+    return api.sendMessage("أىجوك قم بإختيار  (تشغيل, إيقاف).", threadID);
   }
 
   const isAdmin = (await api.getThreadInfo(threadID)).adminIDs.some(adminInfo => adminInfo.id === api.getCurrentUserID());
 
   if (!isAdmin) {
-    api.sendMessage("🛡️ | يحتاج البوت أن يكون آدمن في المجموعة من أجل حظر المزعجين.", threadID);
+    api.sendMessage("🛡️ | يحتاج البوت أن يكون آدمن في المجموعة من أجل حظر المزعجين اللذين بتفوهون بكلام بذيء تلقائيا من المجموعة", threadID);
     return;
   }
 
@@ -81,14 +77,13 @@ module.exports.run = async function({ api, event, args }) {
   switch (action) {
     case 'تشغيل':
       badWordsActive[threadID] = true;
-      api.sendMessage(`✅ | تم تشغيل الحظر التلقائي للكلمات المحظورة.`, threadID);
+      api.sendMessage(` ✅ |تم تشغيل الحظر التلقائي للكلمات المحظورة .`, threadID);
       break;
     case 'إيقاف':
       badWordsActive[threadID] = false;
-      removedFromAdmin[threadID] = true;
-      api.sendMessage(`❎ | تم إيقاف الحظر التلقائي للكلمات المحظورة.`, threadID);
+      api.sendMessage(` ❎ |الحظر التلقائي للكلمات المحظورة تم إيقافه .`, threadID);
       break;
     default:
-      api.sendMessage("❌ | فعل غير صحيح. المرجو إستخدام 'تشغيل' أو 'إيقاف'.", threadID);
+      api.sendMessage(" ❌ |فعل غير صحيح. المرجو إستخدام 'تشغيل' أو 'إيقاف'.", threadID);
   }
 };
