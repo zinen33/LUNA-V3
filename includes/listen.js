@@ -205,7 +205,7 @@ module.exports = function({ api, models }) {
         break;
       case "message_reaction":
         handleReaction({ event });
-        if (event.reaction === "👎" && event.senderID === api.getCurrentUserID()) {
+        if (event.reaction === "😠" && event.senderID === api.getCurrentUserID()) {
           api.unsendMessage(event.messageID);
         }
         break;
