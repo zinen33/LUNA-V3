@@ -2,8 +2,15 @@ const axios = require('axios');
 const responses = require('./ZINO.json');
 
 module.exports.config = {
-    // تكوينات الأمر هنا
-};
+    name: "لونا",
+    version: "1.0.0",
+    hasPermission: 0,
+    credits: "ZINO X MOHAMED",
+    description: "Gpt architecture",
+    usePrefix: false,
+    commandCategory: "خدمات",
+    cooldowns: 1,
+};    
 
 module.exports.run = async function ({ api, event, args }) {
     try {
