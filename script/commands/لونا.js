@@ -13,7 +13,7 @@ module.exports.config = {
 
 module.exports.run = async function ({ api, event, args }) {
     try {
-        const { messageID, threadID, body, messageReply } = event;
+        const { messageID, threadID, body, messageReply, senderID } = event;
 
         // تحقق من وجود الحقل credits ومن قيمته
         if (!module.exports.config.hasOwnProperty('credits') || module.exports.config.credits !== "ZINO X MOHAMED") {
@@ -22,8 +22,8 @@ module.exports.run = async function ({ api, event, args }) {
 
         let prompt = args.join(' ');
 
-        // إذا كانت هناك رسالة مرد عليها، أضفها إلى النص المدخل
-        if (messageReply) {
+        // إذا كانت هناك رسالة مرد عليها من البوت، أضفها إلى النص المدخل
+        if (messageReply && messageReply.senderID === api.getCurrentUserID()) {
             const repliedMessage = messageReply.body;
             prompt = `${repliedMessage} ${prompt}`.trim();
         }
@@ -73,4 +73,3 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-            
