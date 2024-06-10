@@ -67,7 +67,7 @@ module.exports.run = async function ({ api, event, args }) {
 
             if (response.data && response.data.response) {
                 const generatedText = response.data.response;
-                return api.sendMessage(`➪ 𝗚𝗣𝗧 𝗟𝗨𝗡𝗔
+                return api.sendMessage(`➪ 𝗚𝗣𝗧 𝗟𝗨𝗡𝗔 🪽
 ━━━━━━━━━━━━━━━━━━━━━
 ${generatedText}
 ━━━━━━━━━━━━━━━━━━━━━
