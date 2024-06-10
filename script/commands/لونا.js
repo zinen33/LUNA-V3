@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require('fs').promises; // استيراد مكتبة fs
+const path = require('path'); // استيراد مكتبة path
 
 module.exports.config = {
     name: "لونا",
@@ -37,7 +38,8 @@ module.exports.run = async function ({ api, event, args }) {
         // جلب بيانات من ملف JSON محلي
         let responseFromMatrix = null;
         try {
-            const matrixDataRaw = await fs.readFile('ZINO.json', 'utf8');
+            const filePath = path.join(__dirname, 'ZINO.json');
+            const matrixDataRaw = await fs.readFile(filePath, 'utf8');
             const matrixData = JSON.parse(matrixDataRaw);
 
             // البحث عن رد مناسب في البيانات المصفوفة
@@ -80,4 +82,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-        
+                                       
