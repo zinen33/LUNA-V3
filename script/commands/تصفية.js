@@ -1,94 +1,82 @@
-let { gender } = await Users.getInfo(event.senderID);
-
-gender = gender === 1 ? "Female" : "Male";
-
 module.exports.config = {
     name: "تصفية",
     version: "1.0.0",
-    hasPermssion: 1,
-    credits: "ProCoderMew",
-    description: "🇦🇱 اخراج الحسابات المعطلة من المجموعة 🇦🇱",
+    hasPermissions: 1,
+    credits: "ZINO",
+    description: "🇦🇱 اخراج الحسابات المعطلة من القروب 🇦🇱",
     commandCategory: "〘 ادمن قروب ﮱ 〙",
     usages: "فقط",
     cooldowns: 5
 };
 
-module.exports.run = async function({ api, event }) {
-    const { userInfo, adminIDs } = await api.getThreadInfo(event.threadID);
-    const adminCheck = adminIDs.map(e => e.id).some(e => e == global.data.botID);
+function getUserGender(genderCode) {
+    return genderCode === 1 ? 'Female' : (genderCode === 2 ? 'Male' : 'Unknown');
+}
 
-    const filterOptions = "________________________________\n" +
+module.exports.run = async function({ api, event, Users }) {
+    const filterMessage = 
+        "________________________________\n" +
         "رد بالرقم لتصفية\n" +
-        "1 حسابات مغلقة\n" +
-        "2 طرد الإناث\n" +
-        "3 طرد الذكور\n" +
+        "1 حسابات مغلقة \n" +
+        "2 طرد الإناث \n" +
+        "3 طرد الذكور \n" +
         "________________________________";
 
-    api.sendMessage(filterOptions, event.threadID, async (err, info) => {
+    api.sendMessage(filterMessage, event.threadID, (error, info) => {
+        if (error) return console.error(error);
         global.client.handleReply.push({
-            type: "filter",
             name: this.config.name,
             messageID: info.messageID,
             author: event.senderID,
-            userInfo: userInfo,
-            adminCheck: adminCheck,
-            threadID: event.threadID
+            type: "filterSelection"
         });
     });
 };
 
-module.exports.handleReply = async function({ api, event, handleReply }) {
-    if (event.senderID != handleReply.author) return;
+module.exports.handleReply = async function({ api, event, handleReply, Users }) {
+    if (event.senderID !== handleReply.author) return;
 
-    const { userInfo, adminCheck, threadID } = handleReply;
-    const choice = event.body;
-
+    const { userInfo, adminIDs } = await api.getThreadInfo(event.threadID);
+    let success = 0, fail = 0;
     let arr = [];
-    if (choice === '1') {
-        for (const e of userInfo) {
-            if (!e.gender) {
-                arr.push(e.id);
-            }
-        }
-    } else if (choice === '2') {
-        for (const e of userInfo) {
-            if (e.gender == 1) {
-                arr.push(e.id);
-            }
-        }
-    } else if (choice === '3') {
-        for (const e of userInfo) {
-            if (e.gender == 2) {
-                arr.push(e.id);
-            }
-        }
-    } else {
-        return api.sendMessage("اختيار غير صالح، حاول مرة أخرى.", threadID);
+
+    switch (event.body) {
+        case "1":
+            arr = userInfo.filter(e => e.gender === undefined).map(e => e.id);
+            break;
+        case "2":
+            arr = userInfo.filter(e => getUserGender(e.gender) === 'Female').map(e => e.id);
+            break;
+        case "3":
+            arr = userInfo.filter(e => getUserGender(e.gender) === 'Male').map(e => e.id);
+            break;
+        default:
+            return api.sendMessage("اختيار غير صحيح. الرجاء الرد برقم صحيح.", event.threadID);
     }
 
-    if (arr.length == 0) {
-        return api.sendMessage("لا يوجد مستخدمون مستوفون للشروط.", threadID);
+    if (arr.length === 0) {
+        return api.sendMessage("- لا توجد حسابات للتصفية بالمعايير المختارة.", event.threadID);
     } else {
-        if (!adminCheck) {
-            return api.sendMessage("يرجى منحي صلاحيات الأدمن حتى أتمكن من تنفيذ التصفية.", threadID);
-        }
+        const isBotAdmin = adminIDs.map(e => e.id).includes(api.getCurrentUserID());
+        if (!isBotAdmin) {
+            return api.sendMessage("- صعدني أدمن حتى أقدر أصفيهم.", event.threadID);
+        } else {
+            api.sendMessage("- جار التصفية ..", event.threadID, async function() {
+                for (const e of arr) {
+                    try {
+                        await new Promise(resolve => setTimeout(resolve, 1000));  
+                        await api.removeUserFromGroup(parseInt(e), event.threadID);
+                        success++;
+                    } catch {
+                        fail++;
+                    }
+                }
 
-        let success = 0, fail = 0;
-        for (const e of arr) {
-            try {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await api.removeUserFromGroup(parseInt(e), threadID);
-                success++;
-            } catch {
-                fail++;
-            }
+                api.sendMessage("تمت تصفية " + success + " أشخاص بنجاح.", event.threadID, function() {
+                    if (fail !== 0) return api.sendMessage("- حدث خطأ، لم أتمكن من تصفية " + fail + " أشخاص.", event.threadID);
+                });
+            });
         }
-
-        api.sendMessage(`تمت تصفية ${success} أشخاص بنجاح.`, threadID, () => {
-            if (fail != 0) {
-                api.sendMessage(`حدث خطأ، لم أتمكن من تصفية ${fail} أشخاص.`, threadID);
-            }
-        });
     }
 };
-           
+                                                     
