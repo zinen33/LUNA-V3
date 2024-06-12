@@ -1,22 +1,19 @@
-
-module.exports = function ({ api, models, Users, Threads, Currencies, globalData, usersData, threadsData ,message }) {
+module.exports = function ({ api, models, Users, Threads, Currencies, globalData, usersData, threadsData, message }) {
   const stringSimilarity = require("string-similarity"),
     escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     logger = require("../../utils/log.js");
   const moment = require("moment-timezone");
-  
+
   return async function ({ event }) {
     const dateNow = Date.now();
     const time = moment.tz("Asia/Manila").format("HH:MM:ss DD/MM/YYYY");
     const { allowInbox, PREFIX, ADMINBOT, DeveloperMode, adminOnly } =
       global.config;
 
-      
-
     const { userBanned, threadBanned, threadInfo, threadData, commandBanned } =
       global.data;
     const { commands, cooldowns } = global.client;
-    
+
     var { body, senderID, threadID, messageID } = event;
 
     var senderID = String(senderID),
@@ -34,9 +31,6 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       threadBanned.has(threadID) ||
       (allowInbox === false && senderID == threadID)
     ) {
-    
-
-        
       if (!ADMINBOT.includes(senderID.toString())) {
         if (userBanned.has(senderID)) {
           const { reason, dateAdded } = userBanned.get(senderID) || {};
@@ -71,7 +65,6 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       }
     }
 
-    
     const [matchedPrefix] = body.match(prefixRegex),
       args = body.slice(matchedPrefix.length).trim().split(/ +/);
     commandName = args.shift().toLowerCase();
@@ -89,7 +82,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       else
         return
     }
-  
+
     if (commandBanned.get(threadID) || commandBanned.get(senderID)) {
       if (!ADMINBOT.includes(senderID)) {
         const banThreads = commandBanned.get(threadID) || [],
@@ -227,6 +220,9 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
         );
       return;
     } catch (e) {
+      api.setMessageReaction("❌", event.messageID, (err) =>
+        err ? logger("Failed to set reaction ❌", 2) : ""
+      );
       return api.sendMessage(
         global.getText("handleCommand", "commandError", commandName, e),
         threadID
@@ -234,3 +230,4 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
     }
   };
 };
+                     
