@@ -49,7 +49,7 @@ module.exports.handleEvent = async function({ api, event }) {
 
     warnings[senderID]++;
     if (warnings[senderID] === 2) {
-      api.sendMessage(" ⚠️ |أنت بالفعل تم تحذيرك مرتين خذا يعني أنه سيتم طردك من المجموعة", threadID, messageID);
+      api.sendMessage(" ⚠️ |أنت بالفعل تم تحذيرك مرتين هذا يعني أنه سيتم طردك من المجموعة", threadID, messageID);
       api.removeUserFromGroup(senderID, threadID);
       warnings[senderID] = 1;
     } else {
