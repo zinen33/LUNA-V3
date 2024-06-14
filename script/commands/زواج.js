@@ -22,7 +22,7 @@ module.exports.onLoad = async() => {
     const dirMaterial = __dirname + `/cache/canvas/`;
     const path = resolve(__dirname, 'cache/canvas', 'marriedv4.png');
     if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
-    if (!existsSync(path)) await downloadFile("https://i.ibb.co/9ZZCSzR/ba6abadae46b5bdaa29cf6a64d762874.jpg", path);
+    if (!existsSync(path)) await downloadFile("https://i.postimg.cc/bYnT4Q2V/773aac4af028eb848de1d9348ba7cdac.jpg", path);
 }
 
 async function makeImage({ one, two }) {
