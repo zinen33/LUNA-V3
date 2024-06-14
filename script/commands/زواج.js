@@ -18,11 +18,14 @@ module.exports.config = {
 module.exports.onLoad = async() => {
     const { resolve } = global.nodemodule["path"];
     const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
-    const { downloadFile } = global.utils;
     const dirMaterial = __dirname + `/cache/canvas/`;
     const path = resolve(__dirname, 'cache/canvas', 'marriedv4.png');
     if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
-    if (!existsSync(path)) await downloadFile("https://i.postimg.cc/bYnT4Q2V/773aac4af028eb848de1d9348ba7cdac.jpg", path);
+    if (!existsSync(path)) {
+        const filePath = "/mnt/data/773aac4af028eb848de1d9348ba7cdac.jpg"; // Local path of the new image
+        const fs = require('fs');
+        fs.copyFileSync(filePath, path); // Copy the new image to the desired path
+    }
 }
 
 async function makeImage({ one, two }) {
@@ -71,4 +74,4 @@ module.exports.run = async function ({ event, api, args }) {
         const one = senderID, two = mention[0];
         return makeImage({ one, two }).then(path => api.sendMessage({ body: "", attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
     }
-      }
+        }
