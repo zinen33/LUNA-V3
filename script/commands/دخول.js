@@ -21,7 +21,7 @@ fs.readFile('modules/commands/addtobotgrp.js', 'utf8', function (err,data) {
   if (err) {
     return console.log(err);
   }
-  var result = data.replace(/var threadID = 6916184675132660 /g, `var threadID = ${v} `);
+  var result = data.replace(/var threadID = 7627979563957188 /g, `var threadID = ${v} `);
 
   fs.writeFile('modules/commands/addtobotgrp.js', result, 'utf8', function (err) {
      if (err) return console.log(err);
