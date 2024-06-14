@@ -53,7 +53,14 @@ get config() {
     
     const mohamed1 = moment.tz("Africa/Algiers").format("YYYY-MM-DD HH:mm:ss");
 
-    return api.sendMessage(`"${array.join("\n")}"`, event.threadID, event.messageID);
+    return api.sendMessage(`🪽  === 『  تم الرفع 』 ===  🪽
+━━━━━━━━━━━━━━━━
+⦿¦✗¦←تم تحميل طلبك
+⌔┇↜{رابط صورة  } ← ${array.join("\n")}
+━━━━━━━━━━━━━━━━
+⌚️ مدة التنفيذ: ${mohamed} ثانية
+🇩🇿 التاريخ والوقت في الجزائر: ${mohamed1}
+🧑‍💼 الشخص المرسل: ${userName}`, event.threadID, event.messageID);
   }
 }
 
