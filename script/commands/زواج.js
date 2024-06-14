@@ -1,11 +1,11 @@
 module.exports.config = {
     name: "زواج",
-    version: "3.1.1",
+    version: "2.0.0",
     hasPermssion: 0,
-    credits: "عمر",
-    description: "زواج بمنشن",
-    commandCategory: "ترفية",
-    usages: "[@منشن]",
+    credits: "S H A D Y",
+    description: "سوي تاك للحب",
+    commandCategory: "تاك",
+    usages: "",
     cooldowns: 5,
     dependencies: {
         "axios": "",
@@ -18,14 +18,11 @@ module.exports.config = {
 module.exports.onLoad = async() => {
     const { resolve } = global.nodemodule["path"];
     const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
+    const { downloadFile } = global.utils;
     const dirMaterial = __dirname + `/cache/canvas/`;
-    const path = resolve(__dirname, 'cache/canvas', 'marriedv4.png');
+    const path = resolve(__dirname, 'cache/canvas', 'marrywi.png');
     if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
-    if (!existsSync(path)) {
-        const filePath = "/mnt/data/773aac4af028eb848de1d9348ba7cdac.jpg"; // Local path of the new image
-        const fs = require('fs');
-        fs.copyFileSync(filePath, path); // Copy the new image to the desired path
-    }
+    if (!existsSync(path)) await downloadFile("https://i.postimg.cc/bYnT4Q2V/773aac4af028eb848de1d9348ba7cdac.jpg", path);
 }
 
 async function makeImage({ one, two }) {
@@ -35,7 +32,7 @@ async function makeImage({ one, two }) {
     const jimp = global.nodemodule["jimp"];
     const __root = path.resolve(__dirname, "cache", "canvas");
 
-    let batgiam_img = await jimp.read(__root + "/marriedv4.png");
+    let batgiam_img = await jimp.read(__root + "/marrywi.png");
     let pathImg = __root + `/batman${one}_${two}.png`;
     let avatarOne = __root + `/avt_${one}.png`;
     let avatarTwo = __root + `/avt_${two}.png`;
@@ -48,7 +45,7 @@ async function makeImage({ one, two }) {
     
     let circleOne = await jimp.read(await circle(avatarOne));
     let circleTwo = await jimp.read(await circle(avatarTwo));
-    batgiam_img.composite(circleOne.resize(130, 130), 200, 70).composite(circleTwo.resize(130, 130), 350, 150);
+    batgiam_img.resize(432, 280).composite(circleOne.resize(60, 60), 200, 23).composite(circleTwo.resize(60, 60), 136, 40);
     
     let raw = await batgiam_img.getBufferAsync("image/png");
     
@@ -69,9 +66,9 @@ module.exports.run = async function ({ event, api, args }) {
     const fs = global.nodemodule["fs-extra"];
     const { threadID, messageID, senderID } = event;
     const mention = Object.keys(event.mentions);
-    if (!mention[0]) return api.sendMessage("منشن حد", threadID, messageID);
+    if (!mention[0]) return api.sendMessage("دسوي تاك لحبيبك", threadID, messageID);
     else {
         const one = senderID, two = mention[0];
-        return makeImage({ one, two }).then(path => api.sendMessage({ body: "", attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
+        return makeImage({ one, two }).then(path => api.sendMessage({ body: "مبروك ربي يرزقكم بالتعب والقرف ويارب متكونون شواذ علمود سمعتي", attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
     }
-        }
+                                            }
