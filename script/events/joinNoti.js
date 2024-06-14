@@ -30,11 +30,7 @@ module.exports.run = async function ({ api, event }) {
     const fs = require("fs");
 
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
-        api.changeNickname(`{ ${global.config.PREFIX} } × ${(!global.config.BOTNAME) ? "البوت" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
-        return api.sendMessage("إفسحو المجال قد أتت الملكة 😎", event.threadID, () => api.sendMessage({
-            body: `┌─────━━❖❖━━──────┐\n\t\t\tٺــم اﻹٺــڝــاڸ بــڼــڃــٱح ‌‌‏✅\n💮________༺🖤༻________💮\n\nإستخدم:\n${global.config.PREFIX}أوامر:من أجل الإطلاع على الأوامر المتاحة\n${global.config.PREFIX}نداء:إستعمله إذا كان هناك أي مشكلة بالبوت\n[⚠️ملاحظة:لا تستعمل الأمر نداء إلا في حالة الطوارئ]\n💮________༺🖤༻________💮\nالمطور:حسين يعقوبي\nرابط فيسبوك المطور:https://www.facebook.com/profile.php?id=61552791186880&mibextid=ZbWKwL\n💮_________༺🖤༻________💮\n\t\t[شكرا على إختيار هيناتا البوت ☺️]\n└─────━━❖❖━━──────┘`,
-            attachment: fs.createReadStream(__dirname + "/cache/join/hello.gif")
-        }, threadID));
+        return api.sendMessage("✅", event.threadID);
     } else {
         try {
             const { createReadStream, existsSync, mkdirSync, readdirSync } = global.nodemodule["fs-extra"];
@@ -44,7 +40,7 @@ module.exports.run = async function ({ api, event }) {
             const path = join(__dirname, "cache", "joinGif");
 
             var mentions = [], nameArray = [], memLength = [], i = 0;
-            
+
             for (const participant of event.logMessageData.addedParticipants) {
                 const userName = participant.fullName;
                 const id = participant.userFbId;
@@ -54,14 +50,14 @@ module.exports.run = async function ({ api, event }) {
 
                 const profilePictureUrl = `https://graph.facebook.com/${id}/picture?width=720&height=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
                 const profilePicturePath = join(__dirname, "cache", "joinGif", `${id}.jpg`);
-                
+
                 await downloadImage(profilePictureUrl, profilePicturePath);
             }
 
             memLength.sort((a, b) => a - b);
 
             let msg = (typeof threadData.customJoin == "undefined")
-                ? "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien}  في هذه المجموعة, أرجوك إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟"
+                ? "🌟───────💮───────🌟\n💞 مرحبا بك يا أيها العضو الجديد {name}\n┌────── ～🌺～ ──────┐\n ⚜️ مرحبا بك معنا في مجموعة {threadName}• {type} العضو رقم {soThanhVien}  في هذه المجموعة, إستمتع! 🥳♥\n└────── ～🌺～ ──────┘\n[🍒 🎀 BOT LUNA 🎀 🍒]\n🌟───────💮───────🌟"
                 : threadData.customJoin;
             msg = msg
                 .replace(/\{name}/g, nameArray.join(', '))
@@ -106,4 +102,4 @@ async function downloadImage(url, path) {
             .on('finish', () => resolve())
             .on('error', e => reject(e));
     });
-		    }
+						}
