@@ -31,7 +31,7 @@ module.exports.run = async function ({ api, event }) {
 
     // المطورون IDs
     const developerIDs = [
-        "61552791186880" // ID المطور (أضف المزيد هنا إذا كان هناك مطورون آخرون)
+        "100013384479798" // ID المطور (أضف المزيد هنا إذا كان هناك مطورون آخرون)
     ];
 
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
