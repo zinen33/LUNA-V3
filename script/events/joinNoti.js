@@ -30,7 +30,7 @@ module.exports.run = async function ({ api, event }) {
     const fs = require("fs");
 
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
-        return api.sendMessage("إفسحو المجال قد أتت الملكة 😎", event.threadID);
+        return api.sendMessage("✅", event.threadID);
     } else {
         try {
             const { createReadStream, existsSync, mkdirSync, readdirSync } = global.nodemodule["fs-extra"];
