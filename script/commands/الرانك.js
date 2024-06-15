@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const cacheDir = path.join(__dirname, 'cache');
 
-const rankpng = path.join(__dirname, 'cache', 'rankup');
+const rankpng = path.join(__dirname, 'cache', 'rankcard');
 
 const avt = path.join(__dirname, 'cache', 'Avtmot.png');
 
@@ -38,7 +38,7 @@ module.exports.handleEvent = async function({
   const { loadImage, createCanvas } = require("canvas");
   const fs = global.nodemodule["fs-extra"];
   const axios = global.nodemodule["axios"];
-  let pathImg = __dirname + "/cache/rankup/rankup.png";
+  let pathImg = __dirname + "/cache/rankcard/rankup.png";
   let pathAvt1 = __dirname + "/cache/Avtmot.png";
   var id1 = event.senderID;
 
@@ -161,4 +161,4 @@ module.exports.run = async function({ api, event, Threads, getText }) {
   });
   global.data.threadData.set(threadID, data);
   return api.sendMessage(`${(data["rankup"] == true) ? getText("on") : getText("off")} ${getText("successText")}`, threadID, messageID);
-		    }
+		     }
