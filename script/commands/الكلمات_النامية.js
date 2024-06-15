@@ -10,6 +10,7 @@ module.exports.config = {
   name: "حضر",
   version: "1.0.0",
   hasPermission: 1,
+  credits: "ZINO",
   description: "حظر شخص عند قوله كلمة نامية أو محظورة",
   usePrefix: true,
   commandCategory: "المالك",
