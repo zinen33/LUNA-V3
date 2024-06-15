@@ -13,7 +13,7 @@ exec("rm -rf script/commands/data && mkdir -p script/commands/data && rm -rf scr
         console.log(`stderr: ${stderr}`);
         return;
     }
-    console.log(chalk.bold.hex("#00FA9A")("[ AUTO CLEAR CACHE ] 🪽❯ ") + chalk.hex("#00FA9A")("Successfully delete cache"))
+    console.log(chalk.bold.hex("#00FA9A")("[ AUTO CLEAR CACHE ] ❯ ") + chalk.hex("#00FA9A")("Successfully delete cache"))
 });
 
 const DateAndTime = new Date().toLocaleString('en-US', {
