@@ -34,7 +34,7 @@ module.exports.run = async function({ api, event, args }) {
       const userName = userInfo[userId].name;
       const warningMessages = [
         ` اعتذر لايمكنك استخدام الأمر أكثر من 3 مرات لتجنب الحضر يا ${userName}`,
-        ` ألا تفهم لايمكنك استخدام الأمر ايها تبا يا ${userName}`
+        ` ألا تفهم لايمكنك استخدام الأمر ايها تبالك ${userName}`
       ];
       return api.sendMessage(warningMessages[usageLimits[userId].warned - 1], event.threadID);
     } else {
