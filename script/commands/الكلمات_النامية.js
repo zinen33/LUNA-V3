@@ -4,7 +4,7 @@ const fs = require("fs");
 let bannedWords = {};
 let warnings = {};
 let badWordsActive = {};
-let adminWarningSent = {}; // Track if the admin warning has been sent for each thread
+let adminWarningSent = {};
 
 module.exports.config = {
   name: "حضر",
