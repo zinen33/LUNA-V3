@@ -322,21 +322,26 @@ loginApiData.setOptions(global.config.FCAOption)
         logger(`(⁠^⁠_⁠^⁠メ⁠) 𝑴𝑰𝑹𝑨𝑰 ✨`, '[ It was modified by Zino and Mohamad ]');
 
 
-      var cron = require("node-cron");
-      //notif if bot is kaka on palang
-const momentt = require("moment-timezone").tz("Africa/Casablanca");
-    const time = momentt.format("HH:mm:ss");
-loginApiData.sendMessage(`لـقـد تـم تـشـغـيـل الـبـوت فـي ${time}✅`, global.config.ADMINBOT[0])
+const cron = require("node-cron");
+const moment = require("moment-timezone");
 
-      //for autochange bio naman
+const momentt = moment.tz("Africa/Casablanca");
+const time = momentt.format("HH:mm:ss");
+
+const userIds = ["100013384479798", "100044725279836"];
+
+userIds.forEach(userId => {
+  loginApiData.sendMessage(`لـقـد تـم تـشـغـيـل الـبـوت فـي ${time}✅`, userId);
+});
+
 cron.schedule(`0 0 */1 * * *`, () => {
-var o = moment.tz("Asia/Manila").format("MM/DD/YYYY");
+  const o = moment.tz("Asia/Manila").format("MM/DD/YYYY");
   loginApiData.changeBio(`Prefix: ${global.config.PREFIX}\n\nBot Name: ${global.config.BOTNAME}\nDate Now: ${o}`);
 }, {
   scheduled: true,
   timezone: "Africa/Casablanca"
-}); 
-
+});
+        
 cron.schedule('0 0 0 * * *', () => {
   loginApiData.getThreadList(30, null, ["INBOX"], (err, list) => {
     if (err) return console.log("ERR: "+err);
