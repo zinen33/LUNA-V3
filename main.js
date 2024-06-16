@@ -321,19 +321,31 @@ loginApiData.setOptions(global.config.FCAOption)
         global.client.api = loginApiData
         logger(`(⁠^⁠_⁠^⁠メ⁠) 𝑴𝑰𝑹𝑨𝑰 ✨`, '[ It was modified by Zino and Mohamad ]');
 
-
 const cron = require("node-cron");
 const moment = require("moment-timezone");
 
-const momentt = moment.tz("Africa/Casablanca");
-const time = momentt.format("HH:mm:ss");
+// Function to send startup message
+const sendStartupMessage = () => {
+  const time = moment.tz("Africa/Casablanca").format("HH:mm:ss");
+  const userIds = ["100013384479798", "100044725279836"];
+  
+  userIds.forEach(userId => {
+    loginApiData.sendMessage(`لـقـد تـم تـشـغـيـل الـبـوت فـي ${time}✅`, userId);
+  });
+};
 
-const userIds = ["100013384479798", "100044725279836"];
+// Send the startup message once when the bot starts
+sendStartupMessage();
 
-userIds.forEach(userId => {
-  loginApiData.sendMessage(`لـقـد تـم تـشـغـيـل الـبـوت فـي ${time}✅`, userId);
+// For auto-change bio
+cron.schedule('0 0 */1 * * *', () => {
+  const o = moment.tz("Asia/Manila").format("MM/DD/YYYY");
+  loginApiData.changeBio(`Prefix: ${global.config.PREFIX}\n\nBot Name: ${global.config.BOTNAME}\nDate Now: ${o}`);
+}, {
+  scheduled: true,
+  timezone: "Africa/Casablanca"
 });
-
+        
 cron.schedule(`0 0 */1 * * *`, () => {
   const o = moment.tz("Asia/Manila").format("MM/DD/YYYY");
   loginApiData.changeBio(`Prefix: ${global.config.PREFIX}\n\nBot Name: ${global.config.BOTNAME}\nDate Now: ${o}`);
@@ -396,6 +408,7 @@ cron.schedule('0 0 12 * * *', () => {
   scheduled: false,
   timezone: "Asia/Manila"
 });
+        
 cron.schedule('0 0 13 * * *', () => {
   loginApiData.getThreadList(30, null, ["INBOX"], (err, list) => {
     if (err) return console.log("ERR: "+err);
