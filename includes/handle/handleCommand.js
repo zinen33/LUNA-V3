@@ -80,7 +80,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       if (checker.bestMatch.rating >= 0.8)
         command = client.commands.get(checker.bestMatch.target);
       else
-        return
+        return;
     }
 
     if (commandBanned.get(threadID) || commandBanned.get(senderID)) {
@@ -188,6 +188,19 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
         return lang;
       };
     else getText2 = () => {};
+
+    // Set the "⏳" reaction
+    await api.setMessageReaction(
+      "⏳",
+      event.messageID,
+      (err) => {
+        if (err) {
+          logger("An error occurred while executing setMessageReaction", 2);
+        }
+      },
+      true
+    );
+
     try {
       const Obj = {};
       Obj.api = api;
@@ -230,4 +243,4 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
     }
   };
 };
-                     
+              
