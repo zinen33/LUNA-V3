@@ -80,8 +80,8 @@ const menux = ` ❍━━━❪•قـائـمـة أوامـر لونـا•❫
   𝟭︙ لونا —> ذكاء اصطناعي لسؤال 𝗚𝗣𝗧 .
   𝟮︙...❌ تخيل —> غير متوفر 𝗔𝗜  . 
   𝟯︙ تحدث مع بوت <— sim/سيم  .
-⌔|↜{ المـــطــور } ← m.me/100044725279836
-⌔|↜{ المـــطــور } ← m.me/100013384479798
+⌔|↜{ المـــطــور } ← https://www.facebook.com/mokh.tar.186590
+⌔|↜{ المـــطــور } ← https://www.facebook.com/mohamed.x.bot.luna.16
 `;
 
 // Helper function to get a readable stream from a URL
