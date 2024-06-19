@@ -61,8 +61,8 @@ module.exports.run = async({api,event,args}) => {
     if (args[0] == "الادمن") {
       var callback = () => api.sendMessage(
   {body:`———»ADMIN BOT«———
-   ❯ Name: 𝐊𝐈𝐓𝐄 凧 
-   ❯ Facebook: https://www.facebook.com/ELECTR01
+   ❯ Name: ZINO く愛
+   ❯ Facebook: https://www.facebook.com/mokh.tar.186590
    ❯ Thanks for using ${global.config.BOTNAME} bot`,
     attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID, () => 
     fs.unlinkSync(__dirname + "/cache/1.png"));  
@@ -77,7 +77,7 @@ if (args[0] == "المستخدم") {
     else id = event.senderID;
     let data = await api.getUserInfo(id);
     let url = data[id].profileUrl;
-    let b = data[id].isFriend == false ? " للاسف لا ارسل طلب صداقة !" : data[id].isFriend == true ? "أجل !" : "بالطبع";
+    let b = data[id].isFriend == false ? " للأسف لا / ارسل طلب صداقة !" : data[id].isFriend == true ? "أجل !" : "بالطبع";
     let sn = data[id].vanity;
     let name = await data[id].name;
     var sex = await data[id].gender;
@@ -102,7 +102,7 @@ if (args[0] == "المستخدم") {
     else {
     let data = await api.getUserInfo(args[1]);
     let url = data[args[1]].profileUrl;
-    let b = data[args[1]].isFriend == false ? "للاسف لا ارسل طلب صداقة!" : data[args[1]].isFriend == true ? "اجل!" : "بالطبع";
+    let b = data[args[1]].isFriend == false ? "للاسف لا / ارسل طلب صداقة!" : data[args[1]].isFriend == true ? "اجل!" : "بالطبع";
     let sn = data[args[1]].vanity;
     let name = await data[args[1]].name;
     var sex = await data[args[1]].gender;
