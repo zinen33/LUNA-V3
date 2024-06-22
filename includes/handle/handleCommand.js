@@ -4,6 +4,9 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
     logger = require("../../utils/log.js");
   const moment = require("moment-timezone");
 
+  // تخزين حالة تشغيل/إيقاف البوت لكل مجموعة
+  const botStatus = {};
+
   return async function ({ event }) {
     const dateNow = Date.now();
     const time = moment.tz("Asia/Manila").format("HH:MM:ss DD/MM/YYYY");
@@ -21,6 +24,9 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
       `^(<@!?${senderID}>|${escapeRegex(threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : PREFIX)}|\\s*)`
     );
     if (!prefixRegex.test(body)) return;
+
+    // التحقق من حالة تشغيل/إيقاف البوت
+    if (botStatus[threadID] === false && !body.toLowerCase().includes("بوت تشغيل")) return;
 
     if (userBanned.has(senderID) || threadBanned.has(threadID) || (allowInbox === false && senderID == threadID)) {
       if (!ADMINBOT.includes(senderID.toString())) {
@@ -55,6 +61,18 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
     const [matchedPrefix] = body.match(prefixRegex),
       args = body.slice(matchedPrefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
+
+    // أوامر تشغيل وإيقاف البوت
+    if (commandName === "بوت إيقاف" && ADMINBOT.includes(senderID)) {
+      botStatus[threadID] = false;
+      return api.sendMessage("تم إيقاف البوت في هذه المجموعة.", threadID, messageID);
+    }
+
+    if (commandName === "بوت تشغيل" && ADMINBOT.includes(senderID)) {
+      botStatus[threadID] = true;
+      return api.sendMessage("تم تشغيل البوت في هذه المجموعة.", threadID, messageID);
+    }
+
     var command = commands.get(commandName);
     if (!command) {
       var allCommandName = [];
@@ -192,27 +210,4 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
       if (DeveloperMode == !![])
         logger(
           global.getText(
-            "handleCommand",
-            "executeCommand",
-            time,
-            commandName,
-            senderID,
-            threadID,
-            args.join(" "),
-            Date.now() - dateNow
-          ),
-          "[ DEV MODE ]"
-        );
-      return;
-    } catch (e) {
-      api.setMessageReaction("❌", event.messageID, (err) =>
-        err ? logger("Failed to set reaction ❌", 2) : ""
-      );
-      return api.sendMessage(
-        global.getText("handleCommand", "commandError", commandName, e),
-        threadID
-      );
-    }
-  };
-};
-                
+            
