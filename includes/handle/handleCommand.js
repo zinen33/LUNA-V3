@@ -1,11 +1,12 @@
-function ({ api, models, Users, Threads, Currencies, globalData, usersData, threadsData, message }) {
+module.exports = function ({ api, models, Users, Threads, Currencies, globalData, usersData, threadsData, message }) {
   const stringSimilarity = require("string-similarity"),
     escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     logger = require("../../utils/log.js");
   const moment = require("moment-timezone");
 
-  // تخزين حالة تشغيل/إيقاف البوت لكل مجموعة
-  const botStatus = {};
+  // معرف حساب المطور
+  const DEVELOPER_ID = "your_developer_id_here";
+  const stoppedThreads = new Set();
 
   return async function ({ event }) {
     const dateNow = Date.now();
@@ -16,19 +17,37 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
     const { commands, cooldowns } = global.client;
 
     var { body, senderID, threadID, messageID } = event;
+    var senderID = String(senderID), threadID = String(threadID);
 
-    senderID = String(senderID);
-    threadID = String(threadID);
+    // تحقق إذا كان المطور قد أوقف البوت في هذه المجموعة
+    if (stoppedThreads.has(threadID) && senderID !== DEVELOPER_ID) {
+      return;
+    }
+
+    // أوامر المطور لإيقاف وتشغيل البوت
+    if (senderID === DEVELOPER_ID) {
+      if (body.toLowerCase() === "بوت إيقاف") {
+        stoppedThreads.add(threadID);
+        return api.sendMessage("تم إيقاف البوت في هذه المجموعة.", threadID);
+      } else if (body.toLowerCase() === "بوت تشغيل") {
+        stoppedThreads.delete(threadID);
+        return api.sendMessage("تم تشغيل البوت في هذه المجموعة.", threadID);
+      }
+    }
+
     const threadSetting = threadData.get(threadID) || {};
     const prefixRegex = new RegExp(
-      `^(<@!?${senderID}>|${escapeRegex(threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : PREFIX)}|\\s*)`
+      `^(<@!?${senderID}>|${escapeRegex(
+        threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : PREFIX
+      )}|\\s*)`
     );
     if (!prefixRegex.test(body)) return;
 
-    // التحقق من حالة تشغيل/إيقاف البوت
-    if (botStatus[threadID] === false && !body.toLowerCase().includes("بوت تشغيل")) return;
-
-    if (userBanned.has(senderID) || threadBanned.has(threadID) || (allowInbox === false && senderID == threadID)) {
+    if (
+      userBanned.has(senderID) ||
+      threadBanned.has(threadID) ||
+      (allowInbox === false && senderID == threadID)
+    ) {
       if (!ADMINBOT.includes(senderID.toString())) {
         if (userBanned.has(senderID)) {
           const { reason, dateAdded } = userBanned.get(senderID) || {};
@@ -60,27 +79,20 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
 
     const [matchedPrefix] = body.match(prefixRegex),
       args = body.slice(matchedPrefix.length).trim().split(/ +/);
-    const commandName = args.shift().toLowerCase();
-
-    // أوامر تشغيل وإيقاف البوت
-    if (commandName === "بوت إيقاف" && ADMINBOT.includes(senderID)) {
-      botStatus[threadID] = false;
-      return api.sendMessage("تم إيقاف البوت في هذه المجموعة.", threadID, messageID);
-    }
-
-    if (commandName === "بوت تشغيل" && ADMINBOT.includes(senderID)) {
-      botStatus[threadID] = true;
-      return api.sendMessage("تم تشغيل البوت في هذه المجموعة.", threadID, messageID);
-    }
-
+    commandName = args.shift().toLowerCase();
     var command = commands.get(commandName);
     if (!command) {
       var allCommandName = [];
-      const commandValues = commands.keys();
+      const commandValues = commands["keys"]();
       for (const cmd of commandValues) allCommandName.push(cmd);
-      const checker = stringSimilarity.findBestMatch(commandName, allCommandName);
-      if (checker.bestMatch.rating >= 0.8) command = client.commands.get(checker.bestMatch.target);
-      else return;
+      const checker = stringSimilarity.findBestMatch(
+        commandName,
+        allCommandName
+      );
+      if (checker.bestMatch.rating >= 0.8)
+        command = client.commands.get(checker.bestMatch.target);
+      else
+        return;
     }
 
     if (commandBanned.get(threadID) || commandBanned.get(senderID)) {
@@ -89,7 +101,11 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
           banUsers = commandBanned.get(senderID) || [];
         if (banThreads.includes(command.config.name))
           return api.sendMessage(
-            global.getText("handleCommand", "commandThreadBanned", command.config.name),
+            global.getText(
+              "handleCommand",
+              "commandThreadBanned",
+              command.config.name
+            ),
             threadID,
             async (err, info) => {
               await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
@@ -99,7 +115,11 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
           );
         if (banUsers.includes(command.config.name))
           return api.sendMessage(
-            global.getText("handleCommand", "commandUserBanned", command.config.name),
+            global.getText(
+              "handleCommand",
+              "commandUserBanned",
+              command.config.name
+            ),
             threadID,
             async (err, info) => {
               await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
@@ -126,19 +146,25 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
     var threadInfo2;
     if (event.isGroup == !![])
       try {
-        threadInfo2 = threadInfo.get(threadID) || (await Threads.getInfo(threadID));
+        threadInfo2 =
+          threadInfo.get(threadID) || (await Threads.getInfo(threadID));
         if (Object.keys(threadInfo2).length == 0) throw new Error();
       } catch (err) {
         logger(global.getText("handleCommand", "cantGetInfoThread", "error"));
       }
     var permssion = 0;
-    var threadInfoo = threadInfo.get(threadID) || (await Threads.getInfo(threadID));
+    var threadInfoo =
+      threadInfo.get(threadID) || (await Threads.getInfo(threadID));
     const find = threadInfoo.adminIDs.find((el) => el.id == senderID);
     if (ADMINBOT.includes(senderID.toString())) permssion = 2;
     else if (!ADMINBOT.includes(senderID) && find) permssion = 1;
     if (command.config.hasPermssion > permssion)
       return api.sendMessage(
-        global.getText("handleCommand", "permssionNotEnough", command.config.name),
+        global.getText(
+          "handleCommand",
+          "permssionNotEnough",
+          command.config.name
+        ),
         event.threadID,
         event.messageID
       );
@@ -146,22 +172,6 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
       client.cooldowns.set(command.config.name, new Map());
     const timestamps = client.cooldowns.get(command.config.name);
     const expirationTime = (command.config.cooldowns || 1) * 1000;
-    if (timestamps.has(senderID)) {
-      const lastExecution = timestamps.get(senderID);
-      if (dateNow < lastExecution + 1000) {
-        return api.setMessageReaction(
-          "⏳",
-          event.messageID,
-          (err) => {
-            if (err) {
-              logger("An error occurred while executing setMessageReaction", 2);
-            }
-          },
-          true
-        );
-      }
-    }
-
     if (
       timestamps.has(senderID) &&
       dateNow < timestamps.get(senderID) + expirationTime
@@ -175,7 +185,6 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
             : "",
         !![]
       );
-
     var getText2;
     if (
       command.languages &&
@@ -210,4 +219,22 @@ function ({ api, models, Users, Threads, Currencies, globalData, usersData, thre
       if (DeveloperMode == !![])
         logger(
           global.getText(
+            "handleCommand",
+            "executeCommand",
+            time,
+            commandName,
+            senderID,
+            threadID,
+            args.join(" "),
+            Date.now() - dateNow
+          ),
+          "[ DEV MODE ]"
+        );
+      return;
+    } catch (e) {
+      return api.sendMessage(
+        global.getText("handleCommand", "commandError", commandName, e),
+        threadID
+      );
+                 }
             
