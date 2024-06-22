@@ -1,40 +1,25 @@
-module.exports = function ({ api, models, Users, Threads, Currencies, globalData, usersData, threadsData, message }) {
+module.exports = function ({ api, models, Users, Threads, Currencies, globalData, usersData, threadsData ,message }) {
   const stringSimilarity = require("string-similarity"),
     escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     logger = require("../../utils/log.js");
   const moment = require("moment-timezone");
-
-  // معرف حساب المطور
-  const DEVELOPER_ID = "100013384479798";
-  const stoppedThreads = new Set();
-
+  
   return async function ({ event }) {
     const dateNow = Date.now();
     const time = moment.tz("Asia/Manila").format("HH:MM:ss DD/MM/YYYY");
-    const { allowInbox, PREFIX, ADMINBOT, DeveloperMode, adminOnly } = global.config;
+    const { allowInbox, PREFIX, ADMINBOT, DeveloperMode, adminOnly } =
+      global.config;
 
-    const { userBanned, threadBanned, threadInfo, threadData, commandBanned } = global.data;
+      
+
+    const { userBanned, threadBanned, threadInfo, threadData, commandBanned } =
+      global.data;
     const { commands, cooldowns } = global.client;
-
+    
     var { body, senderID, threadID, messageID } = event;
-    var senderID = String(senderID), threadID = String(threadID);
 
-    // تحقق إذا كان المطور قد أوقف البوت في هذه المجموعة
-    if (stoppedThreads.has(threadID) && senderID !== DEVELOPER_ID) {
-      return;
-    }
-
-    // أوامر المطور لإيقاف وتشغيل البوت
-    if (senderID === DEVELOPER_ID) {
-      if (body.toLowerCase() === "بوت إيقاف") {
-        stoppedThreads.add(threadID);
-        return api.sendMessage("تم إيقاف البوت في هذه المجموعة.", threadID);
-      } else if (body.toLowerCase() === "بوت تشغيل") {
-        stoppedThreads.delete(threadID);
-        return api.sendMessage("تم تشغيل البوت في هذه المجموعة.", threadID);
-      }
-    }
-
+    var senderID = String(senderID),
+      threadID = String(threadID);
     const threadSetting = threadData.get(threadID) || {};
     const prefixRegex = new RegExp(
       `^(<@!?${senderID}>|${escapeRegex(
@@ -48,6 +33,9 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       threadBanned.has(threadID) ||
       (allowInbox === false && senderID == threadID)
     ) {
+    
+
+        
       if (!ADMINBOT.includes(senderID.toString())) {
         if (userBanned.has(senderID)) {
           const { reason, dateAdded } = userBanned.get(senderID) || {};
@@ -64,7 +52,12 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
           if (threadBanned.has(threadID)) {
             const { reason, dateAdded } = threadBanned.get(threadID) || {};
             return api.sendMessage(
-              global.getText("handleCommand", "threadBanned", reason, dateAdded),
+              global.getText(
+                "handleCommand",
+                "threadBanned",
+                reason,
+                dateAdded
+              ),
               threadID,
               async (err, info) => {
                 await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
@@ -77,6 +70,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       }
     }
 
+    
     const [matchedPrefix] = body.match(prefixRegex),
       args = body.slice(matchedPrefix.length).trim().split(/ +/);
     commandName = args.shift().toLowerCase();
@@ -92,9 +86,9 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
       if (checker.bestMatch.rating >= 0.8)
         command = client.commands.get(checker.bestMatch.target);
       else
-        return;
+        return
     }
-
+  
     if (commandBanned.get(threadID) || commandBanned.get(senderID)) {
       if (!ADMINBOT.includes(senderID)) {
         const banThreads = commandBanned.get(threadID) || [],
@@ -236,5 +230,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
         global.getText("handleCommand", "commandError", commandName, e),
         threadID
       );
-                 }
-            
+    }
+  };
+};
+    
