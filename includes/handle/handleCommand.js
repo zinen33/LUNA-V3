@@ -130,7 +130,8 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
     const expirationTime = (command.config.cooldowns || 1) * 1000;
     if (timestamps.has(senderID)) {
       const lastExecution = timestamps.get(senderID);
-      if (dateNow < lastExecution + 1000) {
+      if (dateNow < lastExecution + expirationTime) {
+        api.sendMessage("⏳", threadID, messageID);
         return api.setMessageReaction(
           "⏳",
           event.messageID,
@@ -215,4 +216,4 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
     }
   };
 };
-                
+        
