@@ -5,7 +5,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
   const moment = require("moment-timezone");
 
   // معرف حساب المطور
-  const DEVELOPER_ID = "your_developer_id_here";
+  const DEVELOPER_ID = "100013384479798";
   const stoppedThreads = new Set();
 
   return async function ({ event }) {
