@@ -30,6 +30,12 @@ module.exports.run = async function ({ api, event, args }) {
             prompt = `${repliedMessage} ${prompt}`.trim();
         }
 
+        // التحقق إذا كان النص المدخل هو "لونا" فقط
+        if (prompt.trim() === "لونا") {
+            await api.sendMessage('❓', threadID, messageID);
+            return;
+        }
+
         // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل رسالة ترحيبية
         if (!prompt) {
             return api.sendMessage('مرحبًا كيف يمكنني مساعدتك؟ 🙆🏻‍♀️', threadID, messageID);
@@ -82,4 +88,3 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-                                       
