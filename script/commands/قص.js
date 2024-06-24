@@ -33,7 +33,7 @@ module.exports.run = async function({ api, event, args }) {
     const formData = new FormData();
     formData.append('image', fs.createReadStream(inputPath));
 
-    const response = await axios.post('https://bg-ayoub-7f6ed04d9ce7.herokuapp.com/remove-background', formData, {
+    const response = await axios.post('https://bg1-0x3uxp9r.b4a.run/', formData, {
       headers: {
         ...formData.getHeaders(),
       },
