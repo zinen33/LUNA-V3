@@ -13,7 +13,7 @@ module.exports.config = {
     cooldowns: 1,
 };
 
-module.exports.run = async function ({ api, event, args, box }) {
+module.exports.run = async function ({ api, event, args }) {
     try {
         const { messageID, threadID } = event;
 
@@ -28,13 +28,6 @@ module.exports.run = async function ({ api, event, args, box }) {
         if (event.messageReply) {
             const repliedMessage = event.messageReply.body;
             prompt = `${repliedMessage} ${prompt}`.trim();
-        }
-
-        // التحقق إذا كان النص المدخل هو "لونا" فقط
-        if (prompt.trim() === "لونا") {
-            box.reply('Please specify a message!');
-            box.react('❓');
-            return;
         }
 
         // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل رسالة ترحيبية
@@ -89,4 +82,3 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-            
