@@ -13,7 +13,7 @@ module.exports.config = {
     cooldowns: 1,
 };
 
-module.exports.run = async function ({ api, event, args }) {
+module.exports.run = async function ({ api, event, args, box }) {
     try {
         const { messageID, threadID } = event;
 
@@ -32,7 +32,8 @@ module.exports.run = async function ({ api, event, args }) {
 
         // التحقق إذا كان النص المدخل هو "لونا" فقط
         if (prompt.trim() === "لونا") {
-            await api.sendMessage('❓', threadID, messageID);
+            box.reply('Please specify a message!');
+            box.react('❓');
             return;
         }
 
@@ -88,4 +89,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-                
+            
