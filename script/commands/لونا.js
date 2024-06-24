@@ -1,6 +1,18 @@
-بالتأكيد، إليك الكود المعدل الذي يضيف ميزة التفاعل بـ "❓" عند قول "لونا" فقط:
+const axios = require('axios');
+const fs = require('fs').promises; // استيراد مكتبة fs
+const path = require('path'); // استيراد مكتبة path
 
-```
+module.exports.config = {
+    name: "لونا",
+    version: "1.0.0",
+    hasPermission: 0,
+    credits: "ZINO X MOHAMED",
+    description: "Gpt architecture",
+    usePrefix: false,
+    commandCategory: "خدمات",
+    cooldowns: 1,
+};
+
 module.exports.run = async function ({ api, event, args }) {
     try {
         const { messageID, threadID } = event;
@@ -79,3 +91,4 @@ ${generatedText}
 ```
 
 **ملاحظة:** لقد أضفت أيضًا بعض رموز التعليقات لسهولة الفهم.
+                    
