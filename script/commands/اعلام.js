@@ -1,7 +1,7 @@
 module.exports.config = {
     name: "اعلام",
     version: "1.0.0",
-    hasPermssion: 0,
+    hasPermssion: 2,
     credits: "عمر",
     description: "لعبة احزر العلم",
     usages: ["لعبة"],
@@ -19,7 +19,7 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
     const userName = global.data.userName.get(event.senderID) || await Users.getNameUser(event.senderID);
 
     if (userAnswer === correctAnswer) {
-        Currencies.increaseMoney(event.senderID,);
+        Currencies.increaseMoney(event.senderID, 1);  // تأكد من وضع قيمة المكافأة هنا
         api.sendMessage(`✅ | ${userName} إجابتك صحيحة`, event.threadID);
 
         api.unsendMessage(handleReply.messageID);
@@ -30,9 +30,10 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
     fs.unlinkSync(tempImageFilePath);
 };
 
-module.exports.run = async function ({ api, event, args }) {
+async function sendGameMessage(api, threadID) {
     const questions = [
-        { image: "https://i.pinimg.com/originals/6f/a0/39/6fa0398e640e5545d94106c2c42d2ff8.jpg", answer: "العراق" },
+         { image: "https://i.pinimg.com/originals/6f/a0/39/6fa0398e640e5545d94106c2c42d2ff8.jpg", answer: "العراق" },
+        
         { image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/256px-Flag_of_Brazil.svg.png", answer: "البرازيل" },
 
       { image: "https://i.pinimg.com/originals/66/38/a1/6638a104725f4fc592c1b832644182cc.jpg", answer: "فلسطين" },
@@ -147,27 +148,43 @@ module.exports.run = async function ({ api, event, args }) {
 
       { image: "https://i.pinimg.com/236x/8c/4b/bd/8c4bbd6d9683248841c92634e4aba822.jpg", answer: "ايرلندا" },
 
-     
-
-
+    
+        
     ];
 
     const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
     const correctAnswer = randomQuestion.answer;
+    const country = randomQuestion.country;
 
     const imageResponse = await axios.get(randomQuestion.image, { responseType: "arraybuffer" });
     fs.writeFileSync(tempImageFilePath, Buffer.from(imageResponse.data, "binary"));
 
     const attachment = [fs.createReadStream(tempImageFilePath)];
-    const message = `ما اسم علم هذه الدولة؟`;
+    const message = `ما هي عاصمة هذه الدولة (${country})؟`;
 
-    api.sendMessage({ body: message, attachment }, event.threadID, (error, info) => {
+    api.sendMessage({ body: message, attachment }, threadID, (error, info) => {
         if (!error) {
             global.client.handleReply.push({
-                name: this.config.name,
+                name: "اعلام",
                 messageID: info.messageID,
                 correctAnswer: correctAnswer
             });
         }
     });
+}
+
+module.exports.run = async function ({ api, event, args }) {
+    if (args[0] === "إعلام") {
+        const allThreadIDs = global.data.allThreadID; // فرضًا أن لديك طريقة للحصول على جميع معرفات المجموعات
+        for (const threadID of allThreadIDs) {
+            api.sendMessage("وقت لعب 🙂", threadID, (error) => {
+                if (!error) {
+                    sendGameMessage(api, threadID);
+                }
+            });
+        }
+    } else {
+        sendGameMessage(api, event.threadID);
+    }
 };
+    
