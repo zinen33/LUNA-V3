@@ -1,3 +1,25 @@
+const fs = require('fs');
+const axios = require('axios');
+const tempImageFilePath = __dirname + "/cache/tempImage.jpg";
+const maxPlayers = 5;
+const winningPoints = 3;
+const playersFilePath = __dirname + "/players.json";  // تعديل المسار ليكون في نفس الدليل
+
+// تحميل البيانات من ملف JSON
+function loadPlayers() {
+    if (fs.existsSync(playersFilePath)) {
+        return JSON.parse(fs.readFileSync(playersFilePath, 'utf8'));
+    }
+    return [];
+}
+
+// حفظ البيانات إلى ملف JSON
+function savePlayers(players) {
+    fs.writeFileSync(playersFilePath, JSON.stringify(players, null, 2));
+}
+
+let players = loadPlayers();
+
 module.exports.config = {
     name: "اعلام",
     version: "1.0.0",
@@ -8,14 +30,6 @@ module.exports.config = {
     commandCategory: "العاب",
     cooldowns: 0
 };
-
-const fs = require('fs');
-const axios = require('axios');
-const tempImageFilePath = __dirname + "/cache/tempImage.jpg";
-const maxPlayers = 5;
-const winningPoints = 3;
-
-let players = [];
 
 module.exports.handleReply = async function ({ api, event, handleReply, Currencies }) {
     const userAnswer = event.body.trim().toLowerCase();
@@ -35,7 +49,7 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
 
     if (userAnswer === correctAnswer) {
         player.points += 1;
-        api.sendMessage(`✅ | ${userName} إجابتك صحيحة. نقاطك: ${player.points}`, event.threadID);
+        api.sendMessage(`✅ | أحسنت إجابة صحيحة يا ${userName}. نقاطك: ${player.points}`, event.threadID);
 
         if (player.points >= winningPoints) {
             api.sendMessage(`🏆 | ${userName} فاز باللعبة بـ ${player.points} نقاط!`, event.threadID);
@@ -44,8 +58,11 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
 
         api.unsendMessage(handleReply.messageID);
     } else {
-        api.sendMessage(`❌ | خطأ، حاول مرة أخرى`, event.threadID);
+        api.sendMessage(`❌ | الإجابة غير صحيحة، حاول مرة أخرى`, event.threadID);
     }
+
+    // حفظ النقاط إلى ملف JSON
+    savePlayers(players);
 
     fs.unlinkSync(tempImageFilePath);
 
@@ -73,32 +90,24 @@ async function sendGameMessage(api, threadID) {
         attachment: fs.createReadStream(tempImageFilePath)
     };
 
-    const sendMessageToThread = (threadID) => {
+    api.sendMessage(`💡 | تم تشغيل لعبة "احزر العلم"!`, threadID, (error) => {
+        if (error) return console.error(error);
+
         api.sendMessage(gameMessage, threadID, (error, messageInfo) => {
             if (error) return console.error(error);
 
             global.client.handleReply.push({
                 type: "guessFlag",
-                name: this.config.name,
+                name: module.exports.config.name,
                 messageID: messageInfo.messageID,
                 correctAnswer: randomQuestion.answer,
                 author: api.getCurrentUserID()
             });
-
-            api.sendMessage(`💡 | تم تشغيل لعبة "احزر العلم"!`, threadID);
         });
-    };
-
-    // احصل على قائمة المجموعات والأصدقاء
-    const allThreadIDs = (await api.getThreadList(100, null, ["INBOX"])).map(thread => thread.threadID);
-    const allFriendIDs = (await api.getFriendsList()).map(friend => friend.userID);
-
-    // إرسال الرسالة لجميع المجموعات والأصدقاء
-    allThreadIDs.forEach(threadID => sendMessageToThread(threadID));
-    allFriendIDs.forEach(friendID => sendMessageToThread(friendID));
+    });
 }
 
 module.exports.run = async function ({ api, event }) {
     await sendGameMessage(api, event.threadID);
 };
-                                                              
+    
