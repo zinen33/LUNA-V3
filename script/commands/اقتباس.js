@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "اقتباسات",
+  name: "إقتباس",
   version: "1.0.0",
   hasPermssion: 0,
   credits: "ZINO",
