@@ -32,7 +32,7 @@ module.exports.run = async function ({ api, event, args }) {
 
         // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل رسالة ترحيبية
         if (!prompt) {
-            return api.sendMessage('مرحبًا كيف يمكنني مساعدتك؟ 🙆🏻‍♀️', threadID, messageID);
+            return api.sendMessage('مرحبًا كيف يمكنني مساعدتك؟ ✨', threadID, messageID);
         }
 
         // جلب بيانات من ملف JSON محلي
