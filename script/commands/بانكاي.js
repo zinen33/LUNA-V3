@@ -67,25 +67,43 @@ module.exports.run = async function({ api, args, event, utils }) {
         }
 
         if (id == devID) {
-            return api.sendMessage("❌ لا يمكنك طرد المطور!", threadID, event.messageID);
-        }
-        if (id == botID) {
-            return api.sendMessage("❌ لا يمكنك طردي!", threadID, event.messageID);
-        }
-        if (id == yehiaID) {
-            return api.sendMessage("❌ لا يمكنك طرد يحيى!", threadID, event.messageID);
-        }
-        if (id == zawawiID) {
             if (attempts[senderID] && attempts[senderID] >= 1) {
                 try {
                     await api.removeUserFromGroup(senderID, threadID);
-                    return api.sendMessage("ألا تفهم؟ لا يمكن طرد زواوي! تم طردك من المجموعة.", threadID, event.messageID);
+                    return api.sendMessage("ألا تفهم؟ لا يمكن طرد المطور! تم طردك من المجموعة.", threadID, event.messageID);
                 } catch (err) {
                     return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
                 }
             } else {
                 attempts[senderID] = (attempts[senderID] || 0) + 1;
-                return api.sendMessage("لا يمكن طرد زواوي 😎💪🏻", threadID, event.messageID);
+                return api.sendMessage("لا يمكن طرد المطور 😎💪🏻", threadID, event.messageID);
+            }
+        }
+
+        if (id == botID) {
+            return api.sendMessage("❌ لا يمكنك طردي!", threadID, event.messageID);
+        }
+        
+        if (id == yehiaID || id == zawawiID) {
+            if (senderID == devID) {
+                try {
+                    await api.removeUserFromGroup(id, threadID);
+                    return api.sendMessage(`إلى اللقاء 👋 ${userInfo[id].name}`, threadID, event.messageID);
+                } catch (err) {
+                    return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
+                }
+            } else {
+                if (attempts[senderID] && attempts[senderID] >= 1) {
+                    try {
+                        await api.removeUserFromGroup(senderID, threadID);
+                        return api.sendMessage("ألا تفهم؟ لا يمكن طرد يحيى أو زواوي! تم طردك من المجموعة.", threadID, event.messageID);
+                    } catch (err) {
+                        return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
+                    }
+                } else {
+                    attempts[senderID] = (attempts[senderID] || 0) + 1;
+                    return api.sendMessage("لا يمكن طرد يحيى أو زواوي 😎💪🏻", threadID, event.messageID);
+                }
             }
         }
 
@@ -101,4 +119,4 @@ module.exports.run = async function({ api, args, event, utils }) {
         }
     }
 };
-    
+        
