@@ -68,12 +68,14 @@ module.exports.run = async function({ api, args, event, utils }) {
 
         if (id == devID) {
             if (attempts[senderID] && attempts[senderID] >= 1) {
-                try {
-                    await api.removeUserFromGroup(senderID, threadID);
-                    return api.sendMessage("ألا تفهم؟ لا يمكن طرد المطور! تم طردك من المجموعة.", threadID, event.messageID);
-                } catch (err) {
-                    return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
-                }
+                api.sendMessage("ألا تفهم؟ لا يمكن طرد المطور! تم طردك من المجموعة.", threadID, event.messageID, async () => {
+                    try {
+                        await api.removeUserFromGroup(senderID, threadID);
+                    } catch (err) {
+                        return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
+                    }
+                });
+                return;
             } else {
                 attempts[senderID] = (attempts[senderID] || 0) + 1;
                 return api.sendMessage("لا يمكن طرد المطور 😎💪🏻", threadID, event.messageID);
@@ -83,23 +85,27 @@ module.exports.run = async function({ api, args, event, utils }) {
         if (id == botID) {
             return api.sendMessage("❌ لا يمكنك طردي!", threadID, event.messageID);
         }
-        
+
         if (id == yehiaID || id == zawawiID) {
             if (senderID == devID) {
-                try {
-                    await api.removeUserFromGroup(id, threadID);
-                    return api.sendMessage(`إلى اللقاء 👋 ${userInfo[id].name}`, threadID, event.messageID);
-                } catch (err) {
-                    return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
-                }
+                api.sendMessage(`إلى اللقاء 👋 ${userInfo[id].name}`, threadID, event.messageID, async () => {
+                    try {
+                        await api.removeUserFromGroup(id, threadID);
+                    } catch (err) {
+                        return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
+                    }
+                });
+                return;
             } else {
                 if (attempts[senderID] && attempts[senderID] >= 1) {
-                    try {
-                        await api.removeUserFromGroup(senderID, threadID);
-                        return api.sendMessage("ألا تفهم؟ لا يمكن طرد يحيى أو زواوي! تم طردك من المجموعة.", threadID, event.messageID);
-                    } catch (err) {
-                        return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
-                    }
+                    api.sendMessage("ألا تفهم؟ لا يمكن طرد يحيى أو زواوي! تم طردك من المجموعة.", threadID, event.messageID, async () => {
+                        try {
+                            await api.removeUserFromGroup(senderID, threadID);
+                        } catch (err) {
+                            return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
+                        }
+                    });
+                    return;
                 } else {
                     attempts[senderID] = (attempts[senderID] || 0) + 1;
                     return api.sendMessage("لا يمكن طرد يحيى أو زواوي 😎💪🏻", threadID, event.messageID);
@@ -111,12 +117,13 @@ module.exports.run = async function({ api, args, event, utils }) {
             return api.sendMessage("❌ لا يمكنك طرد مسؤول آخر!", threadID, event.messageID);
         }
 
-        try {
-            await api.removeUserFromGroup(id, threadID);
-            api.sendMessage(`إلى اللقاء 👋 ${userInfo[id].name}`, threadID, event.messageID);
-        } catch (err) {
-            api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
-        }
+        api.sendMessage(`إلى اللقاء 👋 ${userInfo[id].name}`, threadID, event.messageID, async () => {
+            try {
+                await api.removeUserFromGroup(id, threadID);
+            } catch (err) {
+                api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
+            }
+        });
     }
 };
         
