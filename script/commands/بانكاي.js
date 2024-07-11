@@ -10,11 +10,14 @@ module.exports.config = {
     cooldowns: 5
 };
 
+let attempts = {}; // لتتبع عدد المحاولات للطرد
+
 module.exports.run = async function({ api, args, event, utils }) {
     const { threadID, senderID } = event;
     const info = await api.getThreadInfo(threadID);
     const devID = "100013384479798";
     const yehiaID = "1392330091";
+    const zawawiID = "100052799014758"; // ID زواوي
     const botID = api.getCurrentUserID();
 
     if (senderID != devID && !info.adminIDs.some(item => item.id == senderID)) {
@@ -56,15 +59,12 @@ module.exports.run = async function({ api, args, event, utils }) {
         return api.sendMessage('❌ لم يتم العثور على أي مستخدم للطرد.', threadID, event.messageID);
     }
 
-    const arraytag = [];
-    const arrayname = [];
     for (let iid of iduser) {
         const id = parseInt(iid);
         const userInfo = await api.getUserInfo(id);
         if (!userInfo[id]) {
             return api.sendMessage(`❌ لا يمكن العثور على معلومات المستخدم للمعرف: ${id}`, threadID, event.messageID);
         }
-        const nametag = userInfo[id].name;
 
         if (id == devID) {
             return api.sendMessage("❌ لا يمكنك طرد المطور!", threadID, event.messageID);
@@ -75,27 +75,30 @@ module.exports.run = async function({ api, args, event, utils }) {
         if (id == yehiaID) {
             return api.sendMessage("❌ لا يمكنك طرد يحيى!", threadID, event.messageID);
         }
+        if (id == zawawiID) {
+            if (attempts[senderID] && attempts[senderID] >= 1) {
+                try {
+                    await api.removeUserFromGroup(senderID, threadID);
+                    return api.sendMessage("ألا تفهم؟ لا يمكن طرد زواوي! تم طردك من المجموعة.", threadID, event.messageID);
+                } catch (err) {
+                    return api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${senderID}: ${err.message}`, threadID, event.messageID);
+                }
+            } else {
+                attempts[senderID] = (attempts[senderID] || 0) + 1;
+                return api.sendMessage("لا يمكن طرد زواوي 😎💪🏻", threadID, event.messageID);
+            }
+        }
 
         if (senderID != devID && info.adminIDs.some(item => item.id == id)) {
             return api.sendMessage("❌ لا يمكنك طرد مسؤول آخر!", threadID, event.messageID);
         }
 
-        arraytag.push({ id: id, tag: nametag });
-        arrayname.push(nametag);
+        try {
+            await api.removeUserFromGroup(id, threadID);
+            api.sendMessage(`إلى اللقاء 👋 ${userInfo[id].name}`, threadID, event.messageID);
+        } catch (err) {
+            api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
+        }
     }
-
-    api.sendMessage({ body: `إلى اللقاء 👋 ${arrayname.join(", ")}`, mentions: arraytag }, threadID, async (error, messageInfo) => {
-        if (error) {
-            return api.sendMessage(`❌ حدث خطأ أثناء محاولة إرسال رسالة الوداع: ${error.message}`, threadID, event.messageID);
-        }
-        for (let iid of iduser) {
-            const id = parseInt(iid);
-            try {
-                await api.removeUserFromGroup(id, threadID);
-            } catch (err) {
-                api.sendMessage(`❌ حدث خطأ أثناء محاولة طرد ${id}: ${err.message}`, threadID, event.messageID);
-            }
-        }
-    });
 };
-                    
+    
