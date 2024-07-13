@@ -35,7 +35,12 @@ module.exports.run = async function ({ api, event, args }) {
             '254596496003721',
             '254593389337365',
             '254597706003600',
-            '371181363634400'
+            '371181363634400',
+            '371180636967806',
+            '2523891204552446',
+            '2523889681219265',
+            '2523887571219476',
+            '2523890051219228'
         ];
 
         // اختيار ستيكر عشوائي من القائمة
@@ -96,4 +101,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-            
+                    
