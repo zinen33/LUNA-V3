@@ -30,12 +30,22 @@ module.exports.run = async function ({ api, event, args }) {
             prompt = `${repliedMessage} ${prompt}`.trim();
         }
 
-        // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل الستيكرز المحدد
+        // قائمة معرفات الستيكرز
+        const stickerIDs = [
+            '254596496003721',
+            '254593389337365',
+            '254597706003600',
+            '371181363634400'
+        ];
+
+        // اختيار ستيكر عشوائي من القائمة
+        const randomStickerID = stickerIDs[Math.floor(Math.random() * stickerIDs.length)];
+
+        // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل الستيكر العشوائي
         if (!prompt) {
-            const stickerID = '254596496003721';
             return api.sendMessage({
                 body: '',
-                sticker: stickerID
+                sticker: randomStickerID
             }, threadID, messageID);
         }
 
@@ -86,4 +96,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-        
+            
