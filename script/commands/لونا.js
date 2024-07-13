@@ -30,9 +30,13 @@ module.exports.run = async function ({ api, event, args }) {
             prompt = `${repliedMessage} ${prompt}`.trim();
         }
 
-        // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل رسالة ترحيبية
+        // إذا لم يكن هناك نص مدخل أو رد على رسالة، أرسل الستيكرز المحدد
         if (!prompt) {
-            return api.sendMessage('مرحبًا كيف يمكنني مساعدتك؟ ✨', threadID, messageID);
+            const stickerID = '254596496003721';
+            return api.sendMessage({
+                body: '',
+                sticker: stickerID
+            }, threadID, messageID);
         }
 
         // جلب بيانات من ملف JSON محلي
@@ -82,3 +86,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
+        
