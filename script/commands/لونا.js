@@ -8,14 +8,14 @@ module.exports.config = {
     hasPermission: 0,
     credits: "ZINO X MOHAMED",
     description: "Gpt architecture",
-    usePrefix: false, // لم نعد بحاجة لهذا الشرط
+    usePrefix: false,
     commandCategory: "خدمات",
     cooldowns: 1,
 };
 
 module.exports.run = async function ({ api, event, args }) {
     try {
-        const { messageID, threadID, body } = event;
+        const { messageID, threadID } = event;
 
         // تحقق من وجود الحقل credits ومن قيمته
         if (!module.exports.config.hasOwnProperty('credits') || module.exports.config.credits !== "ZINO X MOHAMED") {
@@ -28,11 +28,6 @@ module.exports.run = async function ({ api, event, args }) {
         if (event.messageReply) {
             const repliedMessage = event.messageReply.body;
             prompt = `${repliedMessage} ${prompt}`.trim();
-        }
-
-        // التحقق من أن النص يحتوي على كلمة "لونا"
-        if (!body.includes("لونا")) {
-            return;
         }
 
         // قائمة معرفات الستيكرز
@@ -106,4 +101,4 @@ ${generatedText}
         return api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, threadID, messageID);
     }
 };
-        
+                    
