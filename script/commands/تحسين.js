@@ -26,7 +26,7 @@ module.exports.run = async function ({ api, event }) {
 
   api.sendMessage("جـاري تـحـسـيـن الـصـورة ⏳🤝🏻", threadID, async () => {
     try {
-      const response = await axios.get(`https://everyone-ayb-0430ed571732.herokuapp.com/api/try/nino?url=${encodeURIComponent(photoUrl)}`);
+      const response = await axios.get(`https://fourk-ayb.onrender.com/upscale?url=${encodeURIComponent(photoUrl)}`);
       const processedImageURL = response.data.image_data;
       const img = (await axios.get(processedImageURL, { responseType: "arraybuffer" })).data;
 
@@ -39,5 +39,6 @@ module.exports.run = async function ({ api, event }) {
     } catch (error) {
       api.sendMessage(`❌ خطأ في تحسين الصورة: ${error}`, threadID, messageID);
     }
-}); 
-}
+  }); 
+  }
+    
