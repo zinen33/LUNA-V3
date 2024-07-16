@@ -24,7 +24,7 @@ module.exports.config = {
     name: "اعلام",
     version: "1.0.0",
     hasPermssion: 2,
-    credits: "زينو",
+    credits: "عمر",
     description: "لعبة احزر العلم",
     usages: ["لعبة"],
     commandCategory: "العاب",
@@ -120,6 +120,11 @@ async function sendGameMessageToAllGroups(api) {
 }
 
 module.exports.run = async function ({ api, event }) {
-    await sendGameMessageToAllGroups(api);
+    try {
+        await sendGameMessageToAllGroups(api);
+    } catch (error) {
+        console.error(`Error in running the game: ${error.message}`);
+        api.sendMessage("حدث خطأ أثناء تشغيل اللعبة، يرجى المحاولة لاحقاً.", event.threadID);
+    }
 };
-                                                                        
+            
