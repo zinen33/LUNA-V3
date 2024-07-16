@@ -24,7 +24,7 @@ module.exports.config = {
     name: "اعلام",
     version: "1.0.0",
     hasPermssion: 2,
-    credits: "عمر",
+    credits: "زينو",
     description: "لعبة احزر العلم",
     usages: ["لعبة"],
     commandCategory: "العاب",
@@ -54,6 +54,9 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
         if (player.points >= winningPoints) {
             api.sendMessage(`🏆 | ${userName} فاز باللعبة بـ ${player.points} نقاط!`, event.threadID);
             players = []; // إعادة تعيين اللعبة بعد فوز أحد اللاعبين
+        } else {
+            // إرسال سؤال جديد عند الإجابة الصحيحة
+            await sendGameMessage(api, event.threadID);
         }
 
         api.unsendMessage(handleReply.messageID);
@@ -107,7 +110,16 @@ async function sendGameMessage(api, threadID) {
     });
 }
 
+// تعديل لتشغيل اللعبة في جميع المجموعات
+async function sendGameMessageToAllGroups(api) {
+    const allGroups = await api.getThreadList(100, null, ["GROUP"]);
+
+    for (const group of allGroups) {
+        await sendGameMessage(api, group.threadID);
+    }
+}
+
 module.exports.run = async function ({ api, event }) {
-    await sendGameMessage(api, event.threadID);
+    await sendGameMessageToAllGroups(api);
 };
-    
+                                                                        
