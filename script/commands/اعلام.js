@@ -55,8 +55,7 @@ module.exports.handleReply = async function ({ api, event, handleReply, Currenci
             api.sendMessage(`🏆 | ${userName} فاز باللعبة بـ ${player.points} نقاط!`, event.threadID);
             players = []; // إعادة تعيين اللعبة بعد فوز أحد اللاعبين
         } else {
-            // إرسال سؤال جديد عند الإجابة الصحيحة
-            await sendGameMessage(api, event.threadID);
+            await sendGameMessage(api, event.threadID); // إرسال سؤال جديد
         }
 
         api.unsendMessage(handleReply.messageID);
@@ -93,38 +92,24 @@ async function sendGameMessage(api, threadID) {
         attachment: fs.createReadStream(tempImageFilePath)
     };
 
-    api.sendMessage(`💡 | تم تشغيل لعبة "احزر العلم"!`, threadID, (error) => {
+    api.sendMessage(gameMessage, threadID, (error, messageInfo) => {
         if (error) return console.error(error);
 
-        api.sendMessage(gameMessage, threadID, (error, messageInfo) => {
-            if (error) return console.error(error);
-
-            global.client.handleReply.push({
-                type: "guessFlag",
-                name: module.exports.config.name,
-                messageID: messageInfo.messageID,
-                correctAnswer: randomQuestion.answer,
-                author: api.getCurrentUserID()
-            });
+        global.client.handleReply.push({
+            type: "guessFlag",
+            name: module.exports.config.name,
+            messageID: messageInfo.messageID,
+            correctAnswer: randomQuestion.answer,
+            author: api.getCurrentUserID()
         });
     });
 }
 
-// تعديل لتشغيل اللعبة في جميع المجموعات
-async function sendGameMessageToAllGroups(api) {
-    const allGroups = await api.getThreadList(100, null, ["GROUP"]);
-
-    for (const group of allGroups) {
-        await sendGameMessage(api, group.threadID);
-    }
-}
-
 module.exports.run = async function ({ api, event }) {
-    try {
-        await sendGameMessageToAllGroups(api);
-    } catch (error) {
-        console.error(`Error in running the game: ${error.message}`);
-        api.sendMessage("حدث خطأ أثناء تشغيل اللعبة، يرجى المحاولة لاحقاً.", event.threadID);
-    }
+    const allThreadIDs = await api.getThreadList(100, null, ["inbox"]);
+    allThreadIDs.forEach(thread => {
+        api.sendMessage(`💡 | تم تشغيل لعبة "احزر العلم"!`, thread.threadID, async () => {
+            await sendGameMessage(api, thread.threadID);
+        });
+    });
 };
-            
