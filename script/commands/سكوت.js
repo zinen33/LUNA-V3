@@ -60,7 +60,7 @@ module.exports.run = async function ({ api, args, event }) {
 
   if (!thread.adminIDs.some(user => user.id == event.senderID)) {
     return api.sendMessage(
-      "اعتذر هاذا الأمر يعمل مع مسؤولين فقط | ❌",
+      "اعتذر هاذا الأمر يعمل مع مسؤولين فقط |❌",
       event.threadID,
       event.messageID
     );
@@ -86,7 +86,7 @@ module.exports.run = async function ({ api, args, event }) {
     module.exports.config.isOn = true;
     module.exports.config.allowedThreads.push(event.threadID); 
     return api.sendMessage(
-      "تم تشغيل وضع السكوت بنجاح",
+      "تم تشغيل وضع السكوت بنجاح / سأطرد كل من يتحدث ⭐",
       event.threadID,
       event.messageID
     );
