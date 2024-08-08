@@ -17,7 +17,7 @@ module.exports.config = {
 
 module.exports.run = async function({ api, event, args }) {
   try {
-    // تحقق من رد المستخدم على صورة
+    
     if (event.type !== "message_reply" || !event.messageReply.attachments || event.messageReply.attachments.length == 0 || event.messageReply.attachments[0].type != "photo") {
       return api.sendMessage("يـرجـى الـرد عـلـى الـصـورة 🌝", event.threadID, event.messageID);
     }
@@ -33,7 +33,7 @@ module.exports.run = async function({ api, event, args }) {
     const formData = new FormData();
     formData.append('image', fs.createReadStream(inputPath));
 
-    const response = await axios.post('https://bg1-0x3uxp9r.b4a.run/', formData, {
+    const response = await axios.post('https://bgayb1-cr28bji0.b4a.run/remove-background', formData, {
       headers: {
         ...formData.getHeaders(),
       },
