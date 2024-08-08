@@ -87,9 +87,9 @@ module.exports.run = async function ({ api, event, args }) {
             if (response.data && response.data.response) {
                 const generatedText = response.data.response;
                 return api.sendMessage(`➪ 𝗚𝗣𝗧 𝗟𝗨𝗡𝗔 🪽
-━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━
 ${generatedText}
-━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━
  ＺＩＮＯ Ｘ ＭＯＨＡＭＥＤ `, threadID, messageID);
             } else {
                 console.error('API response did not contain expected data:', response.data);
