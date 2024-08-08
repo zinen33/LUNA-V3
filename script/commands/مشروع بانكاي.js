@@ -17,11 +17,13 @@ module.exports.run = async function({ api, args, event, utils }) {
     const yehiaID = "1392330091";
     const botID = api.getCurrentUserID();
 
+    // التحقق من أن المستخدم المسؤول هو الذي يستخدم الأمر
     if (senderID != devID && !info.adminIDs.some(item => item.id == senderID)) {
         return api.sendMessage('❌ هذا الأمر مخصص للمسؤولين فقط.', threadID, event.messageID);
     }
 
-    if (senderID != devID && !info.adminIDs.some(item => item.id == botID)) {
+    // التحقق من أن البوت هو المسؤول في المجموعة
+    if (!info.adminIDs.some(item => item.id == botID)) {
         return api.sendMessage(
             "أمر بانكاي لطرد 🙆🏻‍♀️✅\n\nيمكنك رد على رسالة عضو ب بانكاي لطرده\nأو بانكاي و طاغ @\n\nيمكن للمسؤولين فقط استخدام هذا الأمر ولا يستطيع مسؤول طرد مسؤول آخر بهذا الأمر ⚠️\n\nلكي يعمل الأمر، يجب أن يكون البوت مسؤولاً في المجموعة.",
             threadID,
@@ -98,4 +100,4 @@ module.exports.run = async function({ api, args, event, utils }) {
         }
     });
 };
-                    
+    
