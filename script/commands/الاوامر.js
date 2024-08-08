@@ -81,8 +81,10 @@ const menux = `❍━━━❪•قـائـمـة أوامـر لونـا•❫�
   🤖 قسم الذكاء الاصطناعي:
   𝟭︙لونا —> ذكاء اصطناعي لسؤال 𝗚𝗣𝗧 .
   𝟮︙ تحدث مع بوت <— سيم  .
-⌔|↜{ المـــطــور } ← ZINO https://www.facebook.com/mokh.tar.186590
-⌔|↜{ المـــطــور } ← MOHAMED https://www.facebook.com/mohamed.x.bot.luna.16`;
+⌔|↜{ المـــطــور } ← ZINO 
+https://www.facebook.com/profile.php?id=100013384479798
+⌔|↜{ المـــطــور } ← MOHAMED 
+https://www.facebook.com/profile.php?id=100044725279836`;
 
 // Helper function to get a readable stream from a URL
 const getStreamFromURL = async (url) => {
